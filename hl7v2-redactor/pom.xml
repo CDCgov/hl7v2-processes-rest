@@ -22,7 +22,7 @@
         <micronaut.aot.enabled>false</micronaut.aot.enabled>
         <micronaut.aot.packageName>cdc.gov.aot.generated</micronaut.aot.packageName>
         <micronaut.runtime>netty</micronaut.runtime>
-        <exec.mainClass>cdc.gov.Application</exec.mainClass>
+        <exec.mainClass>cdc.gov.ApplicationKt</exec.mainClass>
         <kotlinVersion>1.9.23</kotlinVersion>
         <hl7-pet-version>1.2.9</hl7-pet-version>
     </properties>
