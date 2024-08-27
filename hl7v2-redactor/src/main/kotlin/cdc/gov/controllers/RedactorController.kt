@@ -12,7 +12,7 @@ import io.micronaut.http.annotation.QueryValue
 import scala.Tuple2
 import java.io.FileNotFoundException
 
-@Controller("/api")  // Base URL for this controller
+@Controller("/")  // Base URL for this controller
 class RedactorController {
 
     @Post("/redactor", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])  // Endpoint URL
