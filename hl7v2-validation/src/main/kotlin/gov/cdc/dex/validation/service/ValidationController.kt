@@ -52,7 +52,7 @@ class ValidationController() {
         val dataStreamValue = dataStreamId.trim().uppercase()
 
         if (dataStreamValue.isEmpty()) {
-            val errorMessage = "BAD REQUEST: Message header must specify a data stream ID using query parameter 'data_stream_id'. Please try again."
+            val errorMessage = "BAD REQUEST: Message header must specify a data stream ID using query parameter 'dataStreamId'. Please try again."
             log.error(errorMessage)
             return HttpResponse.badRequest(errorMessage)
         }
