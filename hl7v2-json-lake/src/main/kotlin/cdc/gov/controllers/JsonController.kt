@@ -2,7 +2,6 @@ package cdc.gov.controllers
 
 import com.google.gson.JsonObject
 
-import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
@@ -18,16 +17,13 @@ class JsonController {
     }
 
     @Post("/jsonTransformer", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])  // Endpoint URL
-    fun redactMessage( @Body content: String,
-                      request: HttpRequest<Any>): HttpResponse<Any> {
+    fun redactMessage(@Body content: String): HttpResponse<Any> {
 
         var responseContent =""
 
          try {
              val fullHL7 = buildJson(content)
-             if (fullHL7 != null) {
-                 responseContent = "{ \"report\": \"${fullHL7}\" }"
-             }
+             responseContent = "{ \"report\": \"${fullHL7}\" }"
 
         }catch (e: Exception) {
              HttpResponse
