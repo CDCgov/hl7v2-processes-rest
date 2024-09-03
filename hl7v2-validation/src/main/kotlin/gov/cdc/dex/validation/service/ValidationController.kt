@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 
-data class ProfileConfiguration(
-    @SerializedName("profile_identifiers") val profileIdentifiers : List<ProfileIdentifier>
-)
+
 
 data class ProfileIdentifier(
     @SerializedName("data_stream_id") val dataStreamId : String,
@@ -37,31 +35,19 @@ class ValidationController() {
         const val PROFILE_CONFIG_FILE_PATH = "profiles/profile_config.json"
         val profileConfigJson = this::class.java.getResource("/$PROFILE_CONFIG_FILE_PATH")?.readText()
         val gson = GsonBuilder().disableHtmlEscaping().serializeNulls().create()
-        val profileConfig = gson.fromJson(profileConfigJson, ProfileConfiguration::class.java)
+        val profileConfig = gson.fromJson(profileConfigJson, ProfileIdentifier::class.java)
 
     }
 
 
     @Post("/validator", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])
     fun structureValidate(
-        @QueryValue dataStreamId: String,
         @Body content: String
     ): HttpResponse<String> {
         log.info("AUDIT::Executing Validation of message...")
 
-        val dataStreamValue = dataStreamId.trim().uppercase()
-
-        if (dataStreamValue.isEmpty()) {
-            val errorMessage = "BAD REQUEST: Message header must specify a data stream ID using query parameter 'dataStreamId'. Please try again."
-            log.error(errorMessage)
-            return HttpResponse.badRequest(errorMessage)
-        }
-        if(dataStreamValue != "DAART")
-            return HttpResponse.badRequest("DataStreamId must be DAART.")
-
         // Assuming 'content' is never null and is required
-        val resultData = validateMessage(content, dataStreamValue)
-
+        val resultData = validateMessage(content)
 
         log.info("Message successfully redacted and validated")
         return HttpResponse.ok(gson.toJson(resultData))
@@ -69,23 +55,20 @@ class ValidationController() {
     }
 
 
-    private fun validateMessage(hl7Message: String, dataStream: String): NistReport {
-        val profileNameAndPaths = getProfileNameAndPaths(hl7Message, dataStream)
-        return getStructureReport(hl7Message, dataStream, profileNameAndPaths)
+    private fun validateMessage(hl7Message: String): NistReport {
+        val profileNameAndPaths = getProfileNameAndPaths(hl7Message)
+        return getStructureReport(hl7Message, profileNameAndPaths)
     }
 
-    fun getProfileNameAndPaths(hl7Content: String, dataStream: String): Pair<String, List<String>> {
+    fun getProfileNameAndPaths(hl7Content: String): Pair<String, List<String>> {
         validateHL7Delimiters(hl7Content)
-        val dataStreamName = dataStream.uppercase().trim()
-        val profileList = profileConfig.profileIdentifiers.filter {
-            it.dataStreamId.uppercase().trim() == dataStreamName
-        }
-        // if the route is not specified in the config file, assume the default of MSH-12
-        val profileIdPaths = if (profileList.isNotEmpty()) {
-            profileList[0].identifierPaths
-        } else listOf(DEFAULT_SPEC_PROFILE)
+        val dataStreamName = "DAART"
+        val profileList = profileConfig.identifierPaths
 
-        val prefix = if (dataStreamName.isNotEmpty()) "$dataStreamName-" else ""
+        // if the route is not specified in the config file, assume the default of MSH-12
+        val profileIdPaths = profileList.ifEmpty { listOf(DEFAULT_SPEC_PROFILE) }
+
+        val prefix = "$dataStreamName-"
         val profileName = try {
             prefix + profileIdPaths.map { path ->
                 HL7StaticParser.getFirstValue(hl7Content, path).get().uppercase()
@@ -118,7 +101,6 @@ class ValidationController() {
 
     private fun getStructureReport(
         hl7Message: String,
-        dataStream: String,
         profileInfo: Pair<String, List<String>>
     ): NistReport {
         val profileName = profileInfo.first
@@ -137,7 +119,7 @@ class ValidationController() {
         } else {
             throw Exception(
                 "Unable to find validation profile named $profileName."
-                        + " Either the data stream ID '$dataStream' or the data in HL7 path(s) " +
+                        + " Either the data stream ID DAART or the data in HL7 path(s) " +
                         "'${profilePaths.joinToString()}' is invalid."
             )
         }
