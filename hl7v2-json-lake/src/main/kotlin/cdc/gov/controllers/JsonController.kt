@@ -1,5 +1,7 @@
 package cdc.gov.controllers
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 
 import io.micronaut.http.HttpResponse
@@ -14,6 +16,7 @@ class JsonController {
 
     companion object {
         const val PROFILE_FILE_PATH = "PhinGuideProfile_v2.json"
+        val gsonNoNulls: Gson = GsonBuilder().create()
     }
 
     @Post("/jsonTransformer", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])  // Endpoint URL
@@ -22,8 +25,9 @@ class JsonController {
         var responseContent =""
 
          try {
-             val fullHL7 = buildJson(content)
-             responseContent = "{ \"report\": \"${fullHL7}\" }"
+             val fullHL7WithNulls = buildJson(content)
+             val fullHL7 = gsonNoNulls.toJsonTree(fullHL7WithNulls).asJsonObject
+             responseContent = "{${fullHL7}}"
 
         }catch (e: Exception) {
              HttpResponse
