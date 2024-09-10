@@ -22,7 +22,7 @@
     <micronaut.runtime>netty</micronaut.runtime>
     <exec.mainClass>cdc.gov.ApplicationKt</exec.mainClass>
     <kotlinVersion>1.9.23</kotlinVersion>
-    <hl7-pet-version>1.2.9</hl7-pet-version>
+    <hl7-pet-version>1.2.10</hl7-pet-version>
   </properties>
 
   <repositories>
@@ -91,7 +91,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>gov.cdc.hl7</groupId>
+      <groupId>gov.cdc</groupId>
       <artifactId>hl7-pet_2.13</artifactId>
       <version>${hl7-pet-version}</version>
     </dependency>

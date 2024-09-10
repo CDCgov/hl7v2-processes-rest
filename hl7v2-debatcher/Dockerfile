@@ -9,13 +9,18 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the project
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 FROM openjdk:17-slim
 
-RUN apt-get update && apt-get install -y
+#RUN apt-get update && apt-get install -y
+# Set the working directory
+WORKDIR /app
 
-COPY --from=builder /target/hl7v2-debatcher-0.1.jar app.jar
+COPY --from=builder /app/target/hl7v2-debatcher-0.1.jar application.jar
+
+# Expose the application port
+EXPOSE 8080
 
 # Set the entrypoint to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "application.jar"]
