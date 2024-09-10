@@ -8,7 +8,6 @@ import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
-import io.micronaut.http.annotation.QueryValue
 import scala.Tuple2
 import java.io.FileNotFoundException
 
