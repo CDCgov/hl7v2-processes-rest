@@ -24,8 +24,8 @@
         <micronaut.runtime>netty</micronaut.runtime>
         <exec.mainClass>cdc.gov.ApplicationKt</exec.mainClass>
         <kotlinVersion>1.9.23</kotlinVersion>
-        <hl7-pet-version>1.2.9</hl7-pet-version>
-        <lib-bumblebee.version>1.3.0-SNAPSHOT</lib-bumblebee.version>
+        <hl7-pet-version>1.2.10</hl7-pet-version>
+        <lib-bumblebee.version>1.3.1</lib-bumblebee.version>
     </properties>
 
     <dependencies>
@@ -87,13 +87,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>gov.cdc.hl7</groupId>
+            <groupId>gov.cdc</groupId>
             <artifactId>hl7-pet_2.13</artifactId>
             <version>${hl7-pet-version}</version>
         </dependency>
         <dependency>
-            <groupId>gov.cdc.dex</groupId>
-            <artifactId>lib-bumblebee</artifactId>
+            <groupId>gov.cdc</groupId>
+            <artifactId>lib-hl7v2-bumblebee</artifactId>
             <version>${lib-bumblebee.version}</version>
         </dependency>
     </dependencies>
