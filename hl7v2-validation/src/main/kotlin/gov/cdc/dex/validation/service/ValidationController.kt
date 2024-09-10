@@ -4,11 +4,11 @@ package gov.cdc.dex.validation.service
 
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
+import gov.cdc.ProfileManager
 
 import gov.cdc.hl7.HL7StaticParser
-import gov.cdc.nist.validator.NistReport
-import gov.cdc.nist.validator.ProfileManager
-import gov.cdc.nist.validator.ResourceFileFetcher
+import gov.cdc.NistReport
+import gov.cdc.ResourceFileFetcher
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
