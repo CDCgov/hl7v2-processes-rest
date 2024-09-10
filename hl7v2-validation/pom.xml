@@ -24,8 +24,8 @@
         <micronaut.runtime>netty</micronaut.runtime>
         <exec.mainClass>gov.cdc.dex.validation.service.ApplicationKt</exec.mainClass>
         <kotlinVersion>1.9.23</kotlinVersion>
-        <hl7-pet-version>1.2.9</hl7-pet-version>
-        <lib-nist-validator.version>1.3.5-SNAPSHOT</lib-nist-validator.version>
+        <hl7-pet-version>1.2.10</hl7-pet-version>
+        <lib-nist-validator.version>1.3.7</lib-nist-validator.version>
     </properties>
 
     <dependencies>
@@ -87,13 +87,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>gov.cdc.hl7</groupId>
+            <groupId>gov.cdc</groupId>
             <artifactId>hl7-pet_2.13</artifactId>
             <version>${hl7-pet-version}</version>
         </dependency>
         <dependency>
-            <groupId>gov.cdc.dex</groupId>
-            <artifactId>lib-nist-validator</artifactId>
+            <groupId>gov.cdc</groupId>
+            <artifactId>lib-hl7v2-nist-validator</artifactId>
             <version>${lib-nist-validator.version}</version>
         </dependency>
     </dependencies>
