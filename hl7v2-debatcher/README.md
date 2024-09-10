@@ -1,31 +1,24 @@
-## Micronaut 4.5.1 Documentation
+## HL7 v2 Debatcher API
 
-- [User Guide](https://docs.micronaut.io/4.5.1/guide/index.html)
-- [API Reference](https://docs.micronaut.io/4.5.1/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/4.5.1/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+The HL7v2 Debatcher API utilizes the HL7-PET library to efficiently split batch of HL7 messages into individual messages and provides a total count of the messages in the report. This API is available for deployment via Docker for streamlined containerization and scaling.
 
-- [Micronaut Maven Plugin documentation](https://micronaut-projects.github.io/micronaut-maven-plugin/latest/)
-## Feature kapt documentation
+## Sample Report
+``` json
+{
+"total_items": 10,
+"items": [
+{
+"item_number": 1,
+"item_content": "MSH.....},
+{
+"item_number": 2,
+"item_content": "MSH....}
+....
+]
+}
+```
+## How to Submit A Message for Debatch
 
-- [Micronaut Kotlin Annotation Processing (KAPT) documentation](https://docs.micronaut.io/snapshot/guide/#kapt)
+Messages can be submitted to the Debatcher API using any HTTP communication tool, e.g., Postman, Fiddler, etc. Callers must supply batch or single HL7 message in message body as raw plain text.
 
-- [https://kotlinlang.org/docs/kapt.html](https://kotlinlang.org/docs/kapt.html)
-
-
-## Feature micronaut-aot documentation
-
-- [Micronaut AOT documentation](https://micronaut-projects.github.io/micronaut-aot/latest/guide/)
-
-
-## Feature maven-enforcer-plugin documentation
-
-- [https://maven.apache.org/enforcer/maven-enforcer-plugin/](https://maven.apache.org/enforcer/maven-enforcer-plugin/)
-
-
-## Feature serialization-jackson documentation
-
-- [Micronaut Serialization Jackson Core documentation](https://micronaut-projects.github.io/micronaut-serialization/latest/guide/)
-
-
+eg url:  http://localhost:8080/debatch
