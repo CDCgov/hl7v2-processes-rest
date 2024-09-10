@@ -3,13 +3,14 @@ package cdc.gov.controllers
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import gov.cdc.HL7JsonTransformer
 
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
-import gov.cdc.hl7.bumblebee.HL7JsonTransformer
+
 
 @Controller("/")  // Base URL for this controller
 class JsonController {
