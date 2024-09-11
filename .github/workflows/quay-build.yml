@@ -1,6 +1,10 @@
 name: Quay Build
 
 on:
+  push:
+    branches:
+      - main
+
   workflow_call:
     branches:
       - main
