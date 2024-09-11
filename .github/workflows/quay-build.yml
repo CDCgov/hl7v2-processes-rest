@@ -20,7 +20,7 @@ jobs:
       # Build and push Validation
       - name: Build & Push hl7-validation
         env:
-          QUAY_REPOSITORY: "organization/us-cdcgov/cdc-dex/hl7-validator"
+          QUAY_REPOSITORY: "us-cdcgov/cdc-dex/hl7-validator"
           VERSION_TAG: "test-2.1.0"
         run: |
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}:${{ env.VERSION_TAG }} ./hl7v2-validation
