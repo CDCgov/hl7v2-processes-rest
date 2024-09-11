@@ -1,6 +1,9 @@
 # functions settings
 local.settings.*
 
+# Local Test
+quay-build.sh
+
 # Mac
 .DS_Store
 
