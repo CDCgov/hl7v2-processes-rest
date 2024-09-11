@@ -31,7 +31,7 @@ jobs:
           QUAY_REPOSITORY: "us-cdcgov"
           VERSION_TAG: "test-2.1.0"
         run: |
-          docker build -t quay.io/${{  }}/hl7v2-validation:${{ env.VERSION_TAG }} ./hl7v2-validation
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7v2-validation:${{ env.VERSION_TAG }} ./hl7v2-validation
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7v2-validation:${  env.VERSION_TAG }}
 
       # Build and push Debatcher
