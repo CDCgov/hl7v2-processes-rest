@@ -1,10 +1,10 @@
 name: Quay Build
 
 on:
+  release:
+    types: [created]
+
   workflow_dispatch:
-    branches:
-      - main
-      - ci/quay
     inputs:
       image_name:
         type: choice
