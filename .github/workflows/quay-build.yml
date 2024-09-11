@@ -2,6 +2,9 @@ name: Quay Build
 
 on:
   workflow_call:
+    branches:
+      - main
+      - ci/quay
     inputs:
       image_name:
         type: choice
