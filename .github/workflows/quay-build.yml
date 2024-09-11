@@ -1,16 +1,19 @@
 name: Quay Build
 
 on:
+  push:
+    branches:
+      - ci/quay
   workflow_dispatch:
     inputs:
-      # image_name:
-      #   type: choice
-      #   description: Image To Build
-      #   options:
-      #     - validation
-      #     - debatcher
-      #     - redactor
-      #     - lake
+      image_name:
+        type: choice
+        description: Image To Build
+        options:
+          - validation
+          - debatcher
+          - redactor
+          - lake
       version_tag:
         description: "Docker Image Version"
         required: true
@@ -28,16 +31,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Quay.io
-        uses: docker/login-action@v4
-        with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+      # - name: Login to Quay.io
+      #   uses: docker/login-action@v4
+      #   with:
+      #     registry: quay.io
+      #     username: ${{ secrets.QUAY_USERNAME }}
+      #     password: ${{ secrets.QUAY_ROBOT_TOKEN }}
 
       # Build and push Validation
       - name: Build & Push hl7-validation
-        if: image_name == 'validation'
+        # if: image_name == 'validation'
         run: |
           docker build -t quay.io/${{ inputs.quay_repository }}/hl7v2-validation:${{ inputs.version_tag }} ./hl7v2-validation
           docker push quay.io/${{ inputs.quay_repository }}/hl7v2-validation:${{ inputs.version_tag }}
