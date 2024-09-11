@@ -9,6 +9,7 @@ on:
         description: "Name of service to build."
         required: true
         type: string
+  push:
 
 jobs:
   quay_build:
