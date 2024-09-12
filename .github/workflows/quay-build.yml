@@ -24,7 +24,7 @@ on:
 #   Options are all, json-lake, validator, debatcher, redactor
 env:
   QUAY_REPOSITORY: "us-cdcgov/cdc-dex"
-  SERVICE_NAME: "all"
+  SERVICE_NAME: "validator"
 
 jobs:
   quay_build:
@@ -38,7 +38,6 @@ jobs:
           echo "--------------------------------------------------"
           echo "Workflow was run by: @${{ github.actor }}"
           echo "Service Name: ${{ env.SERVICE_NAME }}"
-          echo "Tag: ${{ env.VERSION_TAG }}"
           echo "--------------------------------------------------"
 
       - name: Login to Quay.io
