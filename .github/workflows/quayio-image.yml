@@ -25,5 +25,5 @@ jobs:
           QUAY_REPOSITORY: "us-cdcgov / cdc-dex/hl7-redactor"          
           #VERSION_TAG: "test-2.1.0"
         run: |
-          docker build -B -t quay.io/${{ env.QUAY_REPOSITORY }}:${{ env.VERSION_TAG }} ./hl7v2-redactor
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}:${{ env.VERSION_TAG }} ./hl7v2-redactor
           docker push quay.io/${{ env.QUAY_REPOSITORY }}:${{ env.VERSION_TAG }}
