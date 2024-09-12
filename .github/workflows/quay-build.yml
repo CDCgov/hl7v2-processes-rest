@@ -66,7 +66,7 @@ jobs:
         if: ${{ env.SERVICE_NAME }} == 'all' || ${{ env.SERVICE_NAME }} == 'json-lake'
         run: |
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7v2-json-lake ./hl7v2-json-lake
-          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7v2-json-lake
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-json-lake
 
       # Build and push Redactor
       - name: Build & Push hl7-redactor
