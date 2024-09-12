@@ -34,9 +34,8 @@ jobs:
       - name: Runner @${{ github.actor }}
         run: |
           echo "--------------------------------------------------"
-          echo "Workflow was run by: @${{ github.actor }} \n"
-          echo "Service Name: ${{ env.SERVICE_NAME }} \n"
-          echo "Version Tag: ${{ env.VERSION_TAG }} \n"
+          echo "Workflow was run by: @${{ github.actor }}"
+          echo "Service Name: ${{ env.SERVICE_NAME }}"
           echo "--------------------------------------------------"
 
       - name: Login to Quay.io
@@ -54,23 +53,22 @@ jobs:
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator
 
       # Build and push Debatcher
-      # Test
       - name: Build & Push hl7-debatcher
-        if: ${{ env.SERVICE_NAME }} == 'all' || ${{ env.SERVICE_NAME }} == 'debatcher'
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'debatcher' }}
         run: |
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher ./hl7v2-debatcher
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher
 
       # Build and push Json-lake
       - name: Build & Push hl7-json-lake
-        if: ${{ env.SERVICE_NAME }} == 'all' || ${{ env.SERVICE_NAME }} == 'json-lake'
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'json-lake' }}
         run: |
-          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-json-lake ./hl7v2-json-lake
-          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-json-lake
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer ./hl7v2-json-lake
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}//l7-transformer
 
       # Build and push Redactor
       - name: Build & Push hl7-redactor
-        if: ${{ env.SERVICE_NAME }} == 'all' || ${{ env.SERVICE_NAME }} == 'redactor'
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'redactor' }}
         run: |
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor ./hl7v2-redactor
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor
