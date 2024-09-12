@@ -20,9 +20,11 @@ on:
   #       required: true
   #       type: string
 
+# specify variable SERVICE_NAME to build and publish specific image to Quay
+# Options are all, json-lake, validator, debatcher, redactor
 env:
   QUAY_REPOSITORY: "us-cdcgov/cdc-dex"
-  SERVICE_NAME: "json-lake"
+  SERVICE_NAME: "all"
 
 jobs:
   quay_build:
