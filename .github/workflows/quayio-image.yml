@@ -22,29 +22,8 @@ jobs:
       # Build and push Validation
       - name: Build & Push hl7-validation
         env:
-          QUAY_REPOSITORY: "us-cdcgov/cdc-dex/hl7-validator"
+          QUAY_REPOSITORY: "us-cdcgov / cdc-dex/hl7-validator"          
           #VERSION_TAG: "test-2.1.0"
         run: |
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}:${{ env.VERSION_TAG }} ./hl7v2-validation
           docker push quay.io/${{ env.QUAY_REPOSITORY }}:${{ env.VERSION_TAG }}
-
-      # Build and push Debatcher
-      - name: Build & Push hl7-debatcher
-        if: image_name == 'debatcher'
-        run: |
-           docker build -t quay.io/${{ inputs.quay_repository }}/hl7v2-debatcher:${{ inputs.version_tag }} ./hl7v2-debatcher
-           docker push quay.io/${{ inputs.quay_repository }}/hl7v2-debatcher:${{ inputs.version_tag }}
-
-       # Build and push Json-lake
-      - name: Build & Push hl7-json-lake
-        if: image_name == 'lake'
-        run: |
-          docker build -t quay.io/${{ inputs.quay_repository }}/hl7v2-json-lake:${{ inputs.version_tag }} ./hl7v2-json-lake
-          docker push quay.io/${{ inputs.quay_repository }}/hl7v2-json-lake:${{ inputs.version_tag }}
-
-      # Build and push Redactor
-      - name: Build & Push hl7-redactor
-        if: image_name == 'redactor'
-        run: |
-          docker build -t quay.io/${{ inputs.quay_repository }}/hl7v2-redactor:${{ inputs.version_tag }} ./hl7v2-redactor
-          docker push quay.io/${{ inputs.quay_repository }}/hl7v2-redactor:${{ inputs.version_tag }}
