@@ -1,0 +1,71 @@
+name: Quay Build & Publish
+
+on:
+  push:
+    branches:
+      - quayioimage
+  workflow_dispatch:
+     inputs:
+       service_name:
+         type: choice
+         description: Service/Image To Build
+         options:
+           - validation
+           - debatcher
+           - redactor
+           - lake
+       version_tag:
+         description: "Docker Image Version"
+         required: true
+         type: string
+
+jobs:
+  quay_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Runner @${{ github.actor }}
+        env:
+          QUAY_REPOSITORY: "us-cdcgov/cdc-dex"
+          VERSION_TAG: "ci-test-1.1.0"
+          SERVICE_NAME: "all"
+        run: |
+          echo "Workflow was run by: @${{ github.actor }}"
+
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+
+      # Build and push Validator
+      - name: Build & Push hl7-validator
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'validator' }}
+        run: |
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:${{ env.VERSION_TAG }} ./hl7v2-validation
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:${{ env.VERSION_TAG }}
+
+      # Build and push Debatcher
+      # Test
+      - name: Build & Push hl7-debatcher
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'debatcher' }}
+        run: |
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:${{ env.VERSION_TAG }} ./hl7v2-debatcher
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:${{ env.VERSION_TAG }}
+
+      # Build and push Json-lake
+      - name: Build & Push hl7-json-lake
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'json-lake' }}
+        run: |
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7v2-json-lake:${{ env.VERSION_TAG }} ./hl7v2-json-lake
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7v2-json-lake:${{ env.VERSION_TAG }}
+
+      # Build and push Redactor
+      - name: Build & Push hl7-redactor
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'redactor' }}
+        run: |
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor:${{ env.VERSION_TAG }} ./hl7v2-redactor
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor:${{ env.VERSION_TAG }}
