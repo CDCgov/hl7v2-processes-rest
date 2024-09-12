@@ -54,31 +54,29 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Get project version from pom.xml
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
       # Build and push Validator
       - name: Build & Push hl7-validator
         if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'validator'}}
         run: |
-          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:${{ env.VERSION_TAG }} ./hl7v2-validation
-          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:${{ env.VERSION_TAG }}
+          VERSION=$(grep -m1 '<version>' ./hl7v2-validation/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION ./hl7v2-validation
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION
 
       # Build and push Debatcher
       - name: Build & Push hl7-debatcher
         if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'debatcher' }}
         run: |
-          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:${{ env.VERSION_TAG }} ./hl7v2-debatcher
-          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:${{ env.VERSION_TAG }}
+          VERSION=$(grep -m1 '<version>' ./hl7v2-debatcher/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:$VERSION ./hl7v2-debatcher
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:$VERSION
 
       # Build and push Json-lake
       - name: Build & Push hl7-json-lake
         if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'json-lake' }}
         run: |
-          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:${{ env.VERSION_TAG }} ./hl7v2-json-lake
-          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:${{ env.VERSION_TAG }}
+          VERSION=$(grep -m1 '<version>' ./hl7v2-json-lake/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:$VERSION ./hl7v2-json-lake
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:$VERSION
 
       # Build and push Redactor
       - name: Build & Push hl7-redactor
