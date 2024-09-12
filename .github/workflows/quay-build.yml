@@ -1,6 +1,9 @@
 name: Quay Build & Publish
 
 on:
+  push:
+    branches:
+      - ci/quay
   workflow_dispatch:
     inputs:
       service_name:
