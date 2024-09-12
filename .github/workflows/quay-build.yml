@@ -44,6 +44,7 @@ jobs:
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:${{ inputs.version_tag }}
 
       # Build and push Debatcher
+      # Test
       - name: Build & Push hl7-debatcher
         if: ${{ inputs.service_name == 'debatcher' }}
         run: |
