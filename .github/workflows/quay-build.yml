@@ -47,7 +47,7 @@ jobs:
 
       # Build and push Validator
       - name: Build & Push hl7-validator
-        if: ${{ env.SERVICE_NAME }} == 'all' || ${{ env.SERVICE_NAME }} == 'validator'
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'validator'}} 
         run: |
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator ./hl7v2-validation
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator
@@ -64,7 +64,7 @@ jobs:
         if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'json-lake' }}
         run: |
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer ./hl7v2-json-lake
-          docker push quay.io/${{ env.QUAY_REPOSITORY }}//l7-transformer
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer
 
       # Build and push Redactor
       - name: Build & Push hl7-redactor
