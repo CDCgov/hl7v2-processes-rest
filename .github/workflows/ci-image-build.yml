@@ -25,6 +25,8 @@ jobs:
     - name: List unique top-level directories of changed files
       id: getdirs2scan
       run: |
+        pwd
+        ls -l
         unique_paths=$(python3 tools/gitDiffAnalysis.py '')
         echo "dirs=$unique_paths" >> $GITHUB_OUTPUT
         echo "list=$(echo ${values[@]} | jq -c -R 'split(" ")')" >> $GITHUB_ENV
