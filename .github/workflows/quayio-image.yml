@@ -64,7 +64,7 @@ jobs:
       - name: Build & Push hl7-debatcher
         if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'hl7v2-debatcher' }}
         run: |
-          VERSION=$(grep -m1 '<version>' ./hl7v2-debatcher/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\*/')
+          VERSION=$(grep -m1 '<version>' ./hl7v2-debatcher/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\/')
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:$VERSION ./hl7v2-debatcher
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:$VERSION
 
@@ -72,7 +72,7 @@ jobs:
       - name: Build & Push hl7-json-lake
         if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'hl7v2-json-lake' }}
         run: |
-          VERSION=$(grep -m1 '<version>' ./hl7v2-json-lake/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          VERSION=$(grep -m1 '<version>' ./hl7v2-json-lake/pom.xml
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:$VERSION ./hl7v2-json-lake
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:$VERSION
 
