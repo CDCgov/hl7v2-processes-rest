@@ -25,11 +25,19 @@ jobs:
     - name: List unique top-level directories of changed files
       id: getdirs2scan
       run: |
-        pwd
-        ls -l
+        # Capture the Python output
         unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
-        echo "dirs=$unique_paths" >> $GITHUB_OUTPUT
-        echo "list=$(echo ${values[@]} | jq -c -R 'split(" ")')" >> $GITHUB_ENV
+
+        # Convert the Python list to a space-separated string (removing the brackets and quotes)
+        cleaned_paths=$(echo $unique_paths | sed "s/[\[\]']//g" | sed 's/,//g')
+
+        # Write the cleaned paths to $GITHUB_OUTPUT
+        echo "dirs=$cleaned_paths" >> $GITHUB_OUTPUT
+
+        # Create a JSON array from the space-separated values using jq and write to $GITHUB_ENV
+        echo "list=$(echo ${cleaned_paths} | jq -c -R 'split(" ")')" >> $GITHUB_ENV
+
+        # Output the GITHUB_OUTPUT for debugging (optional)
         echo $GITHUB_OUTPUT
 
     outputs:
