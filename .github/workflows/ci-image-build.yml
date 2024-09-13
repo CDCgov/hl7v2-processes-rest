@@ -27,7 +27,7 @@ jobs:
       run: |
         pwd
         ls -l
-        unique_paths=$(python3 tools/gitDiffAnalysis.py)
+        unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
         echo "dirs=$unique_paths" >> $GITHUB_OUTPUT
         echo "list=$(echo ${values[@]} | jq -c -R 'split(" ")')" >> $GITHUB_ENV
         echo $GITHUB_OUTPUT
