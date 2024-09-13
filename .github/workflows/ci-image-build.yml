@@ -31,14 +31,18 @@ jobs:
         # Convert the Python list to a space-separated string (removing the brackets and quotes)
         cleaned_paths=$(echo $unique_paths | sed "s/[\[\]']//g" | sed 's/,//g')
 
+        # Debugging: Print the original and cleaned paths to the GitHub Actions log
+        echo "Original paths from Python: $unique_paths"
+        echo "Cleaned paths: $cleaned_paths"
+
         # Write the cleaned paths to $GITHUB_OUTPUT
         echo "dirs=$cleaned_paths" >> $GITHUB_OUTPUT
 
         # Create a JSON array from the space-separated values using jq and write to $GITHUB_ENV
         echo "list=$(echo ${cleaned_paths} | jq -c -R 'split(" ")')" >> $GITHUB_ENV
 
-        # Output the GITHUB_OUTPUT for debugging (optional)
-        echo $GITHUB_OUTPUT
+        # Debugging: Print the final result for verification
+        echo "Final list: $(echo ${cleaned_paths} | jq -c -R 'split(" ")')"
 
     outputs:
       list-of-values: ${{ steps.parse.outputs.list }}
