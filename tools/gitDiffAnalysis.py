@@ -1,66 +1,24 @@
 import subprocess
 import os
-import argparse
-import json
 
-def fetch_changed_files():
-    """Executes git diff to get a list of changed files from origin/main to HEAD."""
-    cmd = ["git", "diff", "--name-only", "origin/main...HEAD"]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0:
-        raise Exception("Git command failed: " + result.stderr)
-    changed_files = result.stdout.strip().split('\n')
-    return changed_files
+def get_changed_and_new_directories():
+    # Get a list of changed files compared to the last commit
+    changed_files = subprocess.run(['git', 'diff', '--name-only', 'HEAD'], stdout=subprocess.PIPE, text=True)
+    changed_files_list = changed_files.stdout.strip().split('\n')
 
-def analyze_paths(changed_files, nested_folders):
-    """Analyzes file paths and categorizes them based on their presence in nested folders."""
-    unique_folders = set()
-    for file_path in changed_files:
-        # Skip files ending with '.md'
-        if file_path.endswith('.md'):
-            continue
-        # Skip paths that begin with '.github/'
-        if file_path.startswith('.github'):
-            continue
-        if file_path.startswith('tools'):
-            continue
-        
-        path_parts = file_path.split('/')
-        top_level_folder = path_parts[0]
-        
-        if top_level_folder in nested_folders:
-            if len(path_parts) > 1:
-                sub_folder = os.path.join(top_level_folder, path_parts[1])
-                unique_folders.add(sub_folder)
-        else:
-            unique_folders.add(top_level_folder)
-            
-    return list(unique_folders)
+    # Get a list of new/untracked files
+    new_files = subprocess.run(['git', 'ls-files', '--others', '--exclude-standard'], stdout=subprocess.PIPE, text=True)
+    new_files_list = new_files.stdout.strip().split('\n')
 
-def get_app_version(path):
-    """Retrieves the app version from the 'fortify.version' file located in the provided path."""
-    fortify_version_path = os.path.join(path, "fortify.version")
-    try:
-        with open(fortify_version_path, "r") as file:
-            return file.read().strip()
-    except FileNotFoundError:
-        return "Version file not found"
+    # Combine both lists and remove empty strings
+    all_files = filter(None, changed_files_list + new_files_list)
 
-def main():
-    parser = argparse.ArgumentParser(description="Analyze git diff file paths based on nested folders.")
-    parser.add_argument('nested_folders', type=str, help='Comma-separated list of nested folders to analyze.')
-    args = parser.parse_args()
-    
-    nested_folders = args.nested_folders.split(',')
-    
-    try:
-        changed_files = fetch_changed_files()
-        unique_folders = analyze_paths(changed_files, nested_folders)
-        output = [folder for folder in unique_folders]
-        escaped_output = json.dumps(output)
-        print(json.dumps(escaped_output))
-    except Exception as e:
-        print(str(e))
+    # Extract directories from file paths
+    directories = {os.path.dirname(file) for file in all_files if file}
 
-if __name__ == '__main__':
-    main()
+    # Return the directories in a list format, filtering out empty strings (root level)
+    return list(filter(None, directories))
+
+if __name__ == "__main__":
+    directories = get_changed_and_new_directories()
+    print(directories)
