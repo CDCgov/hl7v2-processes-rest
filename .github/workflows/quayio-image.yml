@@ -1,48 +1,86 @@
-name: CI/CD Pipeline
+name: Quay Build & Publish
 
 on:
   push:
     branches:
-      - quayioimage
+      - ci/quay
+      - main
+  workflow_dispatch:
+    inputs:
+      service_name:
+        type: choice
+        description: Service/Image To Build
+        options:
+          - validator
+          - debatcher
+          - redactor
+          - lake
+      version_tag:
+        description: "Docker Image Version"
+        required: true
+        type: string
+
+# Specify variable SERVICE_NAME to build and publish specific image to Quay
+#   Options are all, json-lake, validator, debatcher, redactor
+env:
+  QUAY_REPOSITORY: "us-cdcgov/cdc-dex"
+  SERVICE_NAME: "validator"
 
 jobs:
-  build-and-push:
+  quay_build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Runner @${{ github.actor }}
+        run: |
+          echo "--------------------------------------------------"
+          echo "Workflow was run by: @${{ github.actor }}"
+          echo "Service Name: ${{ env.SERVICE_NAME }}"
+          echo "--------------------------------------------------"
 
-    - name: Login to Quay.io
-      uses: docker/login-action@v3
-      with:
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_ROBOT_TOKEN }}
 
-    - name: Build and push Docker images
-      run: |
-       projects=("hl7v2-redactor" "hl7-v2-debatcher")
-        
-        for hl7v2-redactor in "${projects[@]}"; do
-          echo "Building and pushing Docker image for $hl7v2-redactor"
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
 
-        for hl7v2-debatcher in "${projects[@]}"; do
-          echo "Building and pushing Docker image for $hl7v2-debatcher"
-          
-          docker buildx build \
-            --tag quay.io/us-cdcgov/cdc-dex/$hl7-debatcher:latest \
-            --file $hl7-debatcher/Dockerfile \
-            --push \
-            $hl7-debatcher
-        done
+      # Build and push Validator
+      - name: Build & Push hl7-validator
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'validator'}}
+        run: |
+          VERSION=$(grep -m1 '<version>' ./hl7v2-validation/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION ./hl7v2-validation
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION
 
-          docker buildx build \
-            --tag quay.io/us-cdcgov/cdc-dex/$hl7-redactor:latest \
-            --file $hl7-redactor/Dockerfile \
-            --push \
-            $hl7-redactor
-        done
+      # Build and push Debatcher
+      - name: Build & Push hl7-debatcher
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'debatcher' }}
+        run: |
+          VERSION=$(grep -m1 '<version>' ./hl7v2-debatcher/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:$VERSION ./hl7v2-debatcher
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:$VERSION
+
+      # Build and push Json-lake
+      - name: Build & Push hl7-json-lake
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'json-lake' }}
+        run: |
+          VERSION=$(grep -m1 '<version>' ./hl7v2-json-lake/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:$VERSION ./hl7v2-json-lake
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:$VERSION
+
+      # Build and push Redactor
+      - name: Build & Push hl7-redactor
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'redactor' }}
+        run: |
+          VERSION=$(grep -m1 '<version>' ./hl7v2-redactor/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor:$VERSION ./hl7v2-redactor
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor:$VERSION
