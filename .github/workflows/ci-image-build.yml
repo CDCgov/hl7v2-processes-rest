@@ -1,0 +1,36 @@
+env:
+  nestedFolders: []
+
+name: CI - Image Build
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches:
+      - quayioimage-sr
+  pull_request: 
+    types: [opened, reopened, synchronize]
+    branches: [main]
+    
+jobs: 
+  one:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: List unique top-level directories of changed files
+      id: getdirs2scan
+      run: |
+        unique_paths=$(python3 tools/gitDiffAnalysis.py '${{ env.nestedFolders }}')
+        echo "dirs=$unique_paths" >> $GITHUB_OUTPUT
+        echo $GITHUB_OUTPUT
+   
+      
+
+# pass values for 
+# working_path
