@@ -56,7 +56,7 @@ def main():
     try:
         changed_files = fetch_changed_files()
         unique_folders = analyze_paths(changed_files, nested_folders)
-        output = [{"path": folder, "app": get_app_version(folder)} for folder in unique_folders]
+        output = [folder for folder in unique_folders]
         escaped_output = json.dumps(output)
         print(json.dumps(escaped_output))
     except Exception as e:
