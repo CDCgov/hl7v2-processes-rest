@@ -1,5 +1,4 @@
-env:
-  nestedFolders: []
+
 
 name: CI - Image Build
 
@@ -16,7 +15,7 @@ on:
     branches: [main]
     
 jobs: 
-  one:
+  parse-list:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -26,11 +25,22 @@ jobs:
     - name: List unique top-level directories of changed files
       id: getdirs2scan
       run: |
-        unique_paths=$(python3 tools/gitDiffAnalysis.py '${{ env.nestedFolders }}')
+        unique_paths=$(python3 tools/gitDiffAnalysis.py '')
         echo "dirs=$unique_paths" >> $GITHUB_OUTPUT
+        echo "list=$(echo ${values[@]} | jq -c -R 'split(" ")')" >> $GITHUB_ENV
         echo $GITHUB_OUTPUT
-   
-      
 
-# pass values for 
-# working_path
+    outputs:
+      list-of-values: ${{ steps.parse.outputs.list }}
+            
+  call-template:
+    needs: parse-list
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        value: ${{ fromJson(needs.parse-list.outputs.list-of-values) }}
+    steps:
+      - name: Call reusable workflow with matrix value
+        uses: ./.github/workflows/quayio-image-template.yml
+        with:
+          value: ${{ matrix.value }}
