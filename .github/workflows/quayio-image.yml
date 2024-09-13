@@ -3,8 +3,7 @@ name: Quay Build & Publish
 on:
   push:
     branches:
-      - ci/quay
-      - main
+      - quayioimage
   workflow_dispatch:
     inputs:
       service_name:
