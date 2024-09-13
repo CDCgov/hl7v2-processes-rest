@@ -25,13 +25,13 @@ jobs:
 
     - name: Build and push Docker images
       run: |
-       projects=("redactor" "debatcher")
+       projects=("hl7v2-redactor" "hl7-v2-debatcher")
         
-        for redactor in "${projects[@]}"; do
-          echo "Building and pushing Docker image for $redactor"
+        for hl7v2-redactor in "${projects[@]}"; do
+          echo "Building and pushing Docker image for $hl7v2-redactor"
 
-        for debatcher in "${projects[@]}"; do
-          echo "Building and pushing Docker image for $debatcher"
+        for hl7v2-debatcher in "${projects[@]}"; do
+          echo "Building and pushing Docker image for $hl7v2-debatcher"
           
           docker buildx build \
             --tag quay.io/us-cdcgov/cdc-dex/$hl7-debatcher:latest \
