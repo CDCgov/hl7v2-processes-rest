@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Runner @${{ github.actor }}
         run: |
@@ -31,22 +33,22 @@ jobs:
       - name: Identify Changed Folders
         run: |
           # Check if there are changes in each folder
-          if git diff --name-only HEAD~1 HEAD | grep -q '^json-lake/'; then
+          if git diff --name-only HEAD~2..HEAD | grep -q -E '\bhl7v2-json-lake\b'; then
             echo "JSON_LAKE_CHANGED=TRUE" >> $GITHUB_ENV
             echo "Json-lake changes detected"
           fi
 
-          if git diff --name-only HEAD~1 HEAD | grep -q '^debatcher/'; then
+          if git diff --name-only HEAD~2..HEAD | grep -E '\bhl7v2-debatcher\b'; then
             echo "DEBATCHER_CHANGED=TRUE" >> $GITHUB_ENV
             echo "Debatcher changes detected"
           fi
 
-          if git diff --name-only HEAD~1 HEAD | grep -q '^redactor/'; then
+          if git diff --name-only HEAD~2..HEAD | grep -q -E '\bhl7v2-redactor\b'; then
             echo "REDACTOR_CHANGED=TRUE" >> $GITHUB_ENV
             echo "Redactor changes detected"
           fi
 
-          if git diff --name-only HEAD~1 HEAD | grep -q '^validation/'; then
+          if git diff --name-only HEAD~2..HEAD | grep -q -E '\bhl7v2-validation\b'; then
             echo "VALIDATOR_CHANGED=TRUE" >> $GITHUB_ENV
             echo "Validator changes detected"
           fi
@@ -60,7 +62,7 @@ jobs:
 
       # Build and push Validator
       - name: Build & Push hl7-validator
-        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'validator' || env.VALIDATOR_CHANGED == TRUE}}
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'validator' || env.VALIDATOR_CHANGED == 'TRUE'}}
         run: |
           VERSION=$(grep -m1 '<version>' ./hl7v2-validation/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION ./hl7v2-validation
@@ -68,7 +70,7 @@ jobs:
 
       # Build and push Debatcher
       - name: Build & Push hl7-debatcher
-        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'debatcher' || env.DEBATCHER_CHANGED == TRUE }}
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'debatcher' || env.DEBATCHER_CHANGED == 'TRUE' }}
         run: |
           VERSION=$(grep -m1 '<version>' ./hl7v2-debatcher/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-debatcher:$VERSION ./hl7v2-debatcher
@@ -76,7 +78,7 @@ jobs:
 
       # Build and push Json-lake
       - name: Build & Push hl7-json-lake
-        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'json-lake' || env.JSON_LAKE_CHANGED == TRUE }}
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'json-lake' || env.JSON_LAKE_CHANGED == 'TRUE' }}
         run: |
           VERSION=$(grep -m1 '<version>' ./hl7v2-json-lake/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-transformer:$VERSION ./hl7v2-json-lake
@@ -84,7 +86,7 @@ jobs:
 
       # Build and push Redactor
       - name: Build & Push hl7-redactor
-        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'redactor' || env.REDACTOR_CHANGED == TRUE }}
+        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'redactor' || env.REDACTOR_CHANGED == 'TRUE' }}
         run: |
           VERSION=$(grep -m1 '<version>' ./hl7v2-redactor/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor:$VERSION ./hl7v2-redactor
