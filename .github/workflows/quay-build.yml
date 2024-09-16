@@ -33,6 +33,7 @@ jobs:
 
       - name: Identify Changed Folders
         run: |
+          git diff --name-only HEAD~2..HEAD
           # Check if there are changes in each folder
           if git diff --name-only HEAD~2..HEAD | grep -q '^json-lake/'; then
             echo "JSON_LAKE_CHANGED=TRUE" >> $GITHUB_ENV
