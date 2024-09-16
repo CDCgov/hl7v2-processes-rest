@@ -5,6 +5,7 @@ on:
     branches:
       - ci/quay
       - main
+      - test/quay
 
 env:
   QUAY_REPOSITORY: "us-cdcgov/cdc-dex"
