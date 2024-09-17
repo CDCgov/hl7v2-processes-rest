@@ -6,6 +6,12 @@ on:
       - ci/quay
       - main
 
+# Service Name can take any of the following values:
+#   all - to build all services and push to quay
+#   json-lake - to build and push json-lake image
+#   debatcher - to build and push debatcher image
+#   validator - to build and push validator image
+#   redactor - to build and push redactor image
 env:
   QUAY_REPOSITORY: "us-cdcgov/cdc-dex"
   SERVICE_NAME: "none"
