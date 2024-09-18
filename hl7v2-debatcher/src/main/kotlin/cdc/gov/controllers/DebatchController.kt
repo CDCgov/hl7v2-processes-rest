@@ -28,8 +28,8 @@ class DebatchController {
             var itemNumber = 0
             val messageList = mutableListOf<DebatchedItem>()
             messages.foreach { message ->
-                itemNumber++
-                messageList.add(DebatchedItem(itemNumber, message))
+//                itemNumber++
+                messageList.add(DebatchedItem(++itemNumber, message))
             }
             val collection = DebatchedItemsCollection(totalItems = messageList.size, items = messageList)
             HttpResponse.ok(gson.toJson(collection)).contentEncoding(MediaType.APPLICATION_JSON)

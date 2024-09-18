@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "585f76ad-673a-40e5-b7a8-f4ce0f16d8bd",
+		"name": "HL7v2 Debatcher",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1848148",
+		"_collection_link": "https://gold-sunset-3610.postman.co/workspace/DEX~feb55f1d-34c3-4efc-bf1d-9bb9575c04ee/collection/1848148-585f76ad-673a-40e5-b7a8-f4ce0f16d8bd?action=share&source=collection_link&creator=1848148"
+	},
+	"item": [
+		{
+			"name": "Debatch Messages",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "<<Paste your HL7 messages here>>",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/debatch",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"debatch"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
