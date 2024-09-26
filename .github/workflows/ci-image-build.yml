@@ -22,14 +22,17 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Fetch main branch
+      run: git fetch origin main:main  # Ensure main branch is available
+
     - name: List unique top-level directories of changed files
       id: getdirs2scan
       run: |
         # Show debug results 
         python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github' --debug
-        # Capture the Python output
-        unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
-        echo "Paths with changes: ${unique_paths}"
+        # # Capture the Python output
+        # unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+        # echo "Paths with changes: ${unique_paths}"
 
   #       # Convert the Python list to a space-separated string (removing the brackets and quotes)
   #       cleaned_paths=$(echo $unique_paths | sed "s/[\[\]']//g" | sed 's/,//g')
