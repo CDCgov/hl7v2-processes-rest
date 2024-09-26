@@ -47,7 +47,7 @@ jobs:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths || '[]') }}  # Use job output as matrix input, fallback to empty array
     steps:
-      - name: Debug: Check matrix path
+      - name: Debug Check matrix path
         run: |
           echo "Matrix path: ${{ matrix.path }}"
 
