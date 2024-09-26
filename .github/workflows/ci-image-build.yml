@@ -27,25 +27,25 @@ jobs:
           git fetch origin main:main  # Ensure the main branch is available
 
       - name: List unique top-level directories of changed files
-      id: getdirs2scan
-      run: |
-        # Run your Python script to get changed directories
-        unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+        id: getdirs2scan
+        run: |
+          # Run your Python script to get changed directories
+          unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
 
-        # Ensure the output is formatted correctly
-        echo "Unique paths: $unique_paths"
+          # Ensure the output is formatted correctly
+          echo "Unique paths: $unique_paths"
 
-        # Convert the paths to a valid JSON array
-        unique_paths_json=$(echo "$unique_paths" | jq -R -s 'split("\n") | map(select(length > 0))')
+          # Convert the paths to a valid JSON array
+          unique_paths_json=$(echo "$unique_paths" | jq -R -s 'split("\n") | map(select(length > 0))')
 
-        # Check if the paths are empty and handle gracefully
-        if [ "$unique_paths_json" == "[]" ]; then
-          echo "No paths found after exclusions."
-        fi
+          # Check if the paths are empty and handle gracefully
+          if [ "$unique_paths_json" == "[]" ]; then
+            echo "No paths found after exclusions."
+          fi
 
-        # Write the paths to the environment file for the next job and set the output
-        echo "paths=$unique_paths_json" >> $GITHUB_ENV
-        echo "paths=$unique_paths_json" >> $GITHUB_OUTPUT  # For setting outputs
+          # Write the paths to the environment file for the next job and set the output
+          echo "paths=$unique_paths_json" >> $GITHUB_ENV
+          echo "paths=$unique_paths_json" >> $GITHUB_OUTPUT  # For setting outputs
   
 
   run-template:
