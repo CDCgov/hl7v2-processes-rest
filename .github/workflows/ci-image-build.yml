@@ -39,9 +39,11 @@ jobs:
 
           # Convert the paths to a valid JSON array without extra quotes or escape characters
           unique_paths_json=$(echo "$unique_paths" | jq -R -s 'split("\n") | map(select(length > 0))')
+          unique_paths_json=$(echo "$unique_paths" | jq -R -s 'split("\n") | map(select(length > 0)) | @json')
 
           # Write the paths to the environment file for the next job
           echo "paths=$unique_paths_json" >> $GITHUB_ENV
+
 
       - name: Set output for paths
         run: |
