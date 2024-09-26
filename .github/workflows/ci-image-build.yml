@@ -43,12 +43,14 @@ jobs:
             echo "No paths found after exclusions."
           fi
 
-          # Write the paths to the environment file for the next job
+          # Write the paths to the environment file for the next job and set the output
           echo "paths=$unique_paths_json" >> $GITHUB_ENV
+          echo "paths=$unique_paths_json" >> $GITHUB_OUTPUT  # For setting outputs
 
   run-template:
     needs: parse-list
     runs-on: ubuntu-latest
+    if: ${{ needs.parse-list.outputs.paths != '[]' }}  # Only run if paths are not empty
     strategy:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths || '[]') }}  # Use job output for matrix, fallback to empty array
