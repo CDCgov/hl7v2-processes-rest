@@ -28,39 +28,23 @@ jobs:
     - name: List unique top-level directories of changed files
       id: getdirs2scan
       run: |
-        # Show debug results 
+        # Show debug results
         python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github' --debug
-        # # Capture the Python output
-        # unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
-        # echo "Paths with changes: ${unique_paths}"
-
-  #       # Convert the Python list to a space-separated string (removing the brackets and quotes)
-  #       cleaned_paths=$(echo $unique_paths | sed "s/[\[\]']//g" | sed 's/,//g')
-
-  #       # Debugging: Print the original and cleaned paths to the GitHub Actions log
-  #       echo "Original paths from Python: $unique_paths"
-  #       echo "Cleaned paths: $cleaned_paths"
-
-  #       # Write the cleaned paths to $GITHUB_OUTPUT
-  #       echo "dirs=$cleaned_paths" >> $GITHUB_OUTPUT
-
-  #       # Create a JSON array from the space-separated values using jq and write to $GITHUB_ENV
-  #       echo "list=$(echo ${cleaned_paths} | jq -c -R 'split(" ")')" >> $GITHUB_ENV
-
-  #       # Debugging: Print the final result for verification
-  #       echo "Final list: $(echo ${cleaned_paths} | jq -c -R 'split(" ")')"
-
-  #   outputs:
-  #     list-of-values: ${{ steps.parse.outputs.list }}
-            
-  # call-template:
-  #   needs: parse-list
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       value: ${{ fromJson(needs.parse-list.outputs.list-of-values) }}
-  #   steps:
-  #     - name: Call reusable workflow with matrix value
-  #       uses: ./.github/workflows/quayio-image-template.yml
-  #       with:
-  #         value: ${{ matrix.value }}
+        # Capture the Python output
+        unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+        echo "Unique paths: $unique_paths"
+        # Prepare the output for matrix (convert Python list to GitHub-compatible format)
+        paths_json=$(echo $unique_paths | jq -c '.[]')
+        echo "::set-output name=paths::$paths_json"
+                    
+  run-template:
+    needs: parse-list
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path: ${{ fromJson(needs.parse-list.outputs.paths) }}
+    steps:
+      - name: Call reusable workflow with matrix value
+        uses: ./.github/workflows/quayio-image-template.yml
+        with:
+          value: ${{ matrix.path }}
