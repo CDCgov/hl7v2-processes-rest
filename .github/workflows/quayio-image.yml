@@ -6,7 +6,8 @@ on:
       - quayioimage
   workflow_dispatch:
     inputs:
-      service_name:
+      service_name: 
+        default:  
         type: choice
         description: Service/Image To Build
         options:
@@ -60,7 +61,7 @@ jobs:
 
       # Build and push Redactor
       - name: Build & Push hl7-redactor
-        if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'hl7v2-redactor' }}
+        if: ${{ env.SERVICE_NAME == 'hl7v2-redactor' }}
         run: |
           VERSION=$(grep -m1 '<version>' ./hl7v2-redactor/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-redactor:$VERSION ./hl7v2-redactor
