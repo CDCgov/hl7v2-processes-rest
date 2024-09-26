@@ -73,11 +73,11 @@ jobs:
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION ./hl7v2-validation
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION
           
-          curl -X PUT "https://quay.io/api/v1/repository//${{ env.QUAY_REPOSITORY}}/"
+          curl -X PUT "https://quay.io/api/v1/repository/{hl7-validator}"
           -H "Authorization: Bearer QUAY_ROBOT_TOKEN"
           -H "Content-Type: application/json"
-          -d '{"description": "Test description"}'
-
+          -d '{"description": "New description here"}'
+          
       # Build and push Debatcher
       - name: Build & Push hl7-debatcher
         if: ${{ env.SERVICE_NAME == 'all' || env.SERVICE_NAME == 'debatcher' || env.DEBATCHER_CHANGED == 'TRUE' }}
