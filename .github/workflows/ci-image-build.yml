@@ -48,7 +48,8 @@ jobs:
         path: ${{ fromJson(needs.parse-list.outputs.paths || '[]') }}  # Use job output for matrix, fallback to empty array
     steps:
       - name: Debug Check matrix path
-        run: echo "Matrix path: ${{ matrix.path }}"
+        run: |
+          echo "Matrix path: ${{ matrix.path }}"
 
       - name: Call reusable workflow with matrix value
         uses: ./.github/workflows/quayio-image-template.yml
