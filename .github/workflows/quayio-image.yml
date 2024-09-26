@@ -71,9 +71,9 @@ jobs:
         run: |
           VERSION=$(grep -m1 '<version>' ./hl7v2-validation/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION ./hl7v2-validation
-          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION
+          docker push quay.io/${{ env.QUAY_REPOSITORY }}/hl7-validator:$VERSION/-d '{"body": {"description":"New description here"}}'
           
-          curl -X PUT "https://quay.io/api/v1/repository/{/hl7-validator}"-H "Authorization: Bearer ${{ secrets.QUAY_TOKEN }}" -H "Content-Type: application/json" -d '{"body": {"description":"New description here"}}'
+        # curl -X PUT "https://quay.io/api/v1/repository/{/hl7-validator}"-H "Authorization: Bearer ${{ secrets.QUAY_TOKEN }}" -H "Content-Type: application/json" -d '{"body": {"description":"New description here"}}'
 
       # Build and push Debatcher
       - name: Build & Push hl7-debatcher
