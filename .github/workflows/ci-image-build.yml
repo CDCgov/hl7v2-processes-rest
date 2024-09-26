@@ -23,7 +23,8 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch main branch
-        run: git fetch origin main:main  # Ensure the main branch is available
+        run: |
+          git fetch origin main:main  # Ensure the main branch is available
 
       - name: List unique top-level directories of changed files
         id: getdirs2scan
@@ -39,7 +40,8 @@ jobs:
           echo "paths=$unique_paths_json" >> $GITHUB_ENV
 
       - name: Debug output paths
-        run: cat $GITHUB_ENV  # Output to ensure the paths are written to the environment file
+        run: |
+          cat $GITHUB_ENV  # Output to ensure the paths are written to the environment file
 
   run-template:
     needs: parse-list
@@ -49,7 +51,8 @@ jobs:
         path: ${{ fromJson(needs.parse-list.outputs.paths || '[]') }}  # Use job output for matrix, fallback to empty array
     steps:
       - name: Check matrix path
-        run: echo "Matrix path: ${{ matrix.path }}"
+        run: |
+          echo "Matrix path: ${{ matrix.path }}"
 
       - name: Call reusable workflow with matrix value
         uses: ./.github/workflows/quayio-image-template.yml
