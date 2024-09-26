@@ -3,8 +3,7 @@ name: Quay Build & Publish
 on:
   push:
     branches:
-      - ci/quay
-      - main
+      - quayioimage
 
 # Service Name can take any of the following values:
 #   all - to build all services and push to quay
