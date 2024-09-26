@@ -80,4 +80,6 @@ if __name__ == "__main__":
     directories = get_changed_and_new_directories(args.base_branch, args.exclusions, args.debug)
     
     # Output the result as JSON (valid for GitHub Actions)
-    print(json.dumps(directories))
+    # print(json.dumps(directories))
+    paths = f"'{json.dumps(directories)}'"
+    print(paths)

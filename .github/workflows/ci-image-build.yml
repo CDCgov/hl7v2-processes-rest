@@ -44,6 +44,7 @@ jobs:
           fi
 
           # Write the paths to the environment file for the next job and set the output
+          paths='$unique_paths_json'
           echo "paths=$unique_paths_json" >> $GITHUB_ENV
           echo "paths=$unique_paths_json" >> $GITHUB_OUTPUT  # For setting outputs
   
