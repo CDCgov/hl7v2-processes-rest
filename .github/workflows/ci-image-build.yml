@@ -13,40 +13,48 @@ on:
   pull_request: 
     types: [opened, reopened, synchronize]
     branches: [main]
-    
+
 jobs: 
   parse-list:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Fetch main branch
-      run: git fetch origin main:main  # Ensure main branch is available
+      - name: Fetch main branch
+        run: git fetch origin main:main  # Ensure main branch is available
 
-    - name: List unique top-level directories of changed files
-      id: getdirs2scan
-      run: |
-        # Show debug results
-        python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github' --debug
+      - name: List unique top-level directories of changed files
+        id: getdirs2scan
+        run: |
+          # Show debug results
+          python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github' --debug
 
-        # Capture the Python output
-        unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
-        echo "Unique paths: $unique_paths"
-        
-        # Prepare the output for matrix (convert Python list to GitHub-compatible format)
-        paths_json=$(echo $unique_paths | jq -c '.[]')
-        echo "paths=$unique_paths" >> $GITHUB_ENV
-                    
+          # Capture the Python output and store it in a GitHub environment variable
+          unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+          echo "Unique paths: $unique_paths"
+          
+          # Write the paths as an environment variable for the next job
+          echo "paths=$unique_paths" >> $GITHUB_ENV
+
+      - name: Debug: Log paths
+        run: |
+          echo ${{ env.paths }}
+
   run-template:
     needs: parse-list
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        path: ${{ fromJson(needs.parse-list.outputs.paths) }}
+        path: ${{ fromJson(env.paths || '[]') }}  # Fallback to empty array if paths are not set
     steps:
+      - name: Debug: Check matrix path
+        run: |
+          echo "Matrix path: ${{ matrix.path }}"
+
       - name: Call reusable workflow with matrix value
         uses: ./.github/workflows/quayio-image-template.yml
         with:
           value: ${{ matrix.path }}
+
