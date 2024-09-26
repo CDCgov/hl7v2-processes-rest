@@ -33,10 +33,10 @@ jobs:
           unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
           echo "Unique paths: $unique_paths"
           
-          # Ensure the JSON is correctly formatted without adding extra quotes
+          # Convert the paths to a valid JSON string
           unique_paths_json=$(echo "$unique_paths" | jq -c '.')
-          
-          # Save the paths as a job output via an environment file
+
+          # Write the paths to the environment file without extra spaces
           echo "paths=$unique_paths_json" >> $GITHUB_ENV
 
       - name: Confirm paths output
