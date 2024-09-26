@@ -33,9 +33,11 @@ jobs:
           echo "\n\n"
           # Run your Python script to get changed directories
           unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+
+          # Ensure the output is formatted correctly
           echo "Unique paths: $unique_paths"
-          
-          # Convert the paths to a valid JSON array
+
+          # Convert the paths to a valid JSON array without extra quotes or escape characters
           unique_paths_json=$(echo "$unique_paths" | jq -R -s 'split("\n") | map(select(length > 0))')
 
           # Write the paths to the environment file for the next job
