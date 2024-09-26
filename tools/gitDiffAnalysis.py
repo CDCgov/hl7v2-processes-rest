@@ -8,8 +8,9 @@ def get_changed_and_new_directories(base_branch="main", exclude_patterns=None, d
     if exclude_patterns is None:
         exclude_patterns = []
 
-    # Add /.github exclusion
+    # Add /.github exclusion and ensure it covers all subdirectories
     exclude_patterns.append('.github')
+    exclude_patterns.append('.github/*')
 
     # Helper function to check if a path matches any exclusion pattern
     def is_excluded(path):
@@ -59,6 +60,7 @@ def get_changed_and_new_directories(base_branch="main", exclude_patterns=None, d
     return unique_directories
 
 if __name__ == "__main__":
+
     # Use argparse to handle command-line arguments
     parser = argparse.ArgumentParser(description="Get a list of directories with changed or new files in the current Git branch.")
     
