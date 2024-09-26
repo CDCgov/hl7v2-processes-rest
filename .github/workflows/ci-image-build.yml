@@ -1,5 +1,3 @@
-
-
 name: CI - Image Build
 
 defaults:
@@ -14,9 +12,11 @@ on:
     types: [opened, reopened, synchronize]
     branches: [main]
 
-jobs: 
+jobs:
   parse-list:
     runs-on: ubuntu-latest
+    outputs:
+      paths: ${{ steps.getdirs2scan.outputs.paths }}  # Set the output for this job
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,25 +29,23 @@ jobs:
         id: getdirs2scan
         run: |
           # Show debug results
-          python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github' --debug
-
-          # Capture the Python output and store it in a GitHub environment variable
           unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
           echo "Unique paths: $unique_paths"
           
-          # Write the paths as an environment variable for the next job
+          # Write the paths to the environment file for later steps
           echo "paths=$unique_paths" >> $GITHUB_ENV
 
-      - name: Debug: Log paths
+      - name: Set paths as output
+        id: set_output_paths
         run: |
-          echo ${{ env.paths }}
+          echo "paths=$unique_paths" >> $GITHUB_ENV
 
   run-template:
     needs: parse-list
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        path: ${{ fromJson(env.paths || '[]') }}  # Fallback to empty array if paths are not set
+        path: ${{ fromJson(needs.parse-list.outputs.paths || '[]') }}  # Use job output as matrix input, fallback to empty array
     steps:
       - name: Debug: Check matrix path
         run: |
@@ -57,4 +55,3 @@ jobs:
         uses: ./.github/workflows/quayio-image-template.yml
         with:
           value: ${{ matrix.path }}
-
