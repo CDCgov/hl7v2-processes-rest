@@ -1,0 +1,60 @@
+name: CI - Image Build
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches:
+      - quayioimage-sr
+  pull_request: 
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+jobs:
+  parse-list:
+    runs-on: ubuntu-latest
+    outputs:
+      paths: ${{ steps.getdirs2scan.outputs.paths }}  # Declare the job output for paths
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch main branch
+        run: |
+          git fetch origin main:main  # Ensure the main branch is available
+
+      - name: List unique top-level directories of changed files
+        id: getdirs2scan
+        run: |
+          # Run your Python script to get changed directories
+          unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+          echo "Unique paths: $unique_paths"
+          
+          # Ensure the JSON is correctly formatted without adding extra quotes
+          unique_paths_json=$(echo "$unique_paths" | jq -c '.')
+          
+          # Save the paths as a job output via an environment file
+          echo "paths=$unique_paths_json" >> $GITHUB_ENV
+
+      - name: Confirm paths output
+        run: |
+          cat $GITHUB_ENV  # Debugging to ensure paths are correctly set
+
+  run-template:
+    needs: parse-list
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path: ${{ fromJson(needs.parse-list.outputs.paths || '[]') }}  # Use job output for matrix, fallback to empty array
+    steps:
+      - name: Check matrix path
+        run: |
+          echo "Matrix path: ${{ matrix.path }}"
+
+      - name: Call reusable workflow with matrix value
+        uses: ./.github/workflows/quayio-image-template.yml
+        with:
+          value: ${{ matrix.path }}
