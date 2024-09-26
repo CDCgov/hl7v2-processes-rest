@@ -2,6 +2,7 @@ import subprocess
 import os
 import fnmatch
 import argparse
+import json
 
 def get_changed_and_new_directories(base_branch="main", exclude_patterns=None, debug=False):
     if exclude_patterns is None:
@@ -76,5 +77,5 @@ if __name__ == "__main__":
     # Call the function with the exclusions passed in via the command line and the debug flag
     directories = get_changed_and_new_directories(args.base_branch, args.exclusions, args.debug)
     
-    # Output the result (standard output)
-    print(directories)
+    # Output the result as JSON (valid for GitHub Actions)
+    print(json.dumps(directories))
