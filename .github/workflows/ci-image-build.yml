@@ -32,13 +32,18 @@ jobs:
           unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
           echo "Unique paths: $unique_paths"
           
-          # Write the paths to the environment for the next job
-          echo "paths=$unique_paths" >> $GITHUB_ENV
+          # Convert the paths to a JSON string (valid for GitHub Actions)
+          unique_paths_json=$(echo "$unique_paths" | jq -c '.')
+          
+          # Save the JSON string to the outputs using the new method
+          echo "paths=$unique_paths_json" >> $GITHUB_ENV
 
       - name: Set output for paths
         id: set_output_paths
         run: |
-          echo "paths=$(cat $GITHUB_ENV)" >> $GITHUB_ENV  # Ensure paths are correctly set for output
+          # Debugging output to ensure paths are set properly
+          echo "paths=$(cat $GITHUB_ENV)"
+          echo "::set-output name=paths::$(cat $GITHUB_ENV)"  # Set output for next job
 
   run-template:
     needs: parse-list
