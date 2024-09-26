@@ -30,12 +30,14 @@ jobs:
       run: |
         # Show debug results
         python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github' --debug
+
         # Capture the Python output
         unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
         echo "Unique paths: $unique_paths"
+        
         # Prepare the output for matrix (convert Python list to GitHub-compatible format)
         paths_json=$(echo $unique_paths | jq -c '.[]')
-        echo "::set-output name=paths::$paths_json"
+        echo "paths=$unique_paths" >> $GITHUB_ENV
                     
   run-template:
     needs: parse-list
