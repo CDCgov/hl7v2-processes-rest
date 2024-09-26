@@ -27,6 +27,7 @@ jobs:
       run: |
         # Capture the Python output
         unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+        echo "Paths with changes: ${unique_paths}"
 
         # Convert the Python list to a space-separated string (removing the brackets and quotes)
         cleaned_paths=$(echo $unique_paths | sed "s/[\[\]']//g" | sed 's/,//g')
