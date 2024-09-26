@@ -16,7 +16,7 @@ jobs:
   parse-list:
     runs-on: ubuntu-latest
     outputs:
-      paths: ${{ steps.getdirs2scan.outputs.paths }}  # Output paths for use in the next job
+      paths: ${{ steps.getdirs2scan.outputs.paths }}  # Declare the job output for paths
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,14 +34,20 @@ jobs:
           echo "Unique paths: $unique_paths"
           
           # Convert the paths to a valid JSON string
-          unique_paths_json=$(echo "$unique_paths" | jq -c '.')
+          unique_paths_json=$(echo "$unique_paths" | jq -R '.' | jq -s '.')
           
-          # Write the paths to the environment file for the next job
+          # Save the paths as a job output via an environment file
           echo "paths=$unique_paths_json" >> $GITHUB_ENV
 
-      - name: Debug output paths
+      - name: Set output for paths
+        id: set_output_paths
         run: |
-          cat $GITHUB_ENV  # Output to ensure the paths are written to the environment file
+          echo "paths=$unique_paths_json" >> $GITHUB_ENV  # Save paths for the next job
+          
+      - name: Confirm paths output
+        id: confirm_paths
+        run: |
+          echo "Paths: $(cat $GITHUB_ENV)"  # Debugging to ensure paths are correctly set
 
   run-template:
     needs: parse-list
