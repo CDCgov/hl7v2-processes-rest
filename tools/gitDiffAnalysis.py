@@ -3,9 +3,12 @@ import os
 import fnmatch
 import argparse
 
-def get_changed_and_new_directories(exclude_patterns=None):
+def get_changed_and_new_directories(base_branch="main", exclude_patterns=None, debug=False):
     if exclude_patterns is None:
         exclude_patterns = []
+
+    # Add /.github exclusion
+    exclude_patterns.append('.github')
 
     # Helper function to check if a path matches any exclusion pattern
     def is_excluded(path):
@@ -15,20 +18,36 @@ def get_changed_and_new_directories(exclude_patterns=None):
         # Check if the directory itself is excluded
         directory = os.path.dirname(path)
         return any(fnmatch.fnmatch(directory, pattern) for pattern in exclude_patterns)
-    
-    # Get a list of changed files compared to the last commit
-    changed_files = subprocess.run(['git', 'diff', '--name-only', 'HEAD'], stdout=subprocess.PIPE, text=True)
-    changed_files_list = changed_files.stdout.strip().split('\n')
 
-    # Get a list of new/untracked files
-    new_files = subprocess.run(['git', 'ls-files', '--others', '--exclude-standard'], stdout=subprocess.PIPE, text=True)
-    new_files_list = new_files.stdout.strip().split('\n')
+    # Compare the current branch with the base branch using --name-status
+    diff_command = ['git', 'diff', '--name-status', f'{base_branch}...HEAD']
+    compare_diff = subprocess.run(diff_command, stdout=subprocess.PIPE, text=True)
+    diff_output = compare_diff.stdout.strip().split('\n')
 
-    # Combine both lists and remove empty strings
-    all_files = filter(None, changed_files_list + new_files_list)
+    # Process the diff output and extract file paths
+    all_files = []
+    for line in diff_output:
+        if line:
+            # Each line starts with the status code (A, M, D) followed by the file path
+            status, file = line.split('\t', 1)
+            if status != 'D':  # We skip deleted files, as we only care about new/modified directories
+                all_files.append(file)
+
+    # Print debug output if --debug is specified
+    if debug:
+        print(f"Detected files (compared with {base_branch}):", all_files)
 
     # Extract directories from file paths and apply exclusion
-    directories = {os.path.dirname(file) for file in all_files if file and not is_excluded(file)}
+    directories = set()
+    for file in all_files:
+        if not is_excluded(file):
+            # Handle root directory files
+            directory = os.path.dirname(file) or '.'
+            directories.add(directory)
+        else:
+            # Print debug output if --debug is specified
+            if debug:
+                print(f"Excluded: {file}")
 
     # Convert the set back to a list (which is inherently unique)
     unique_directories = list(directories)
@@ -45,11 +64,17 @@ if __name__ == "__main__":
     # Add argument for exclusions
     parser.add_argument('--exclusions', nargs='+', default=[], help="List of paths or patterns to exclude, e.g. --exclusions 'path/one' '*.md' '.github'")
 
+    # Add argument for base branch to compare against (e.g., 'main' or 'develop')
+    parser.add_argument('--base-branch', default='main', help="Base branch to compare with (default is 'main').")
+
+    # Add debug flag
+    parser.add_argument('--debug', action='store_true', help="Print debug information.")
+
     # Parse the arguments
     args = parser.parse_args()
 
-    # Call the function with the exclusions passed in via the command line
-    directories = get_changed_and_new_directories(args.exclusions)
+    # Call the function with the exclusions passed in via the command line and the debug flag
+    directories = get_changed_and_new_directories(args.base_branch, args.exclusions, args.debug)
     
-    # Output the result
+    # Output the result (standard output)
     print(directories)
