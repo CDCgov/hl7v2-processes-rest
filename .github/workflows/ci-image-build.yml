@@ -7,7 +7,6 @@ defaults:
 on:
   push:
     branches:
-      - quayioimage-sr
       - quayioimage
   pull_request: 
     types: [opened, reopened, synchronize]
@@ -21,11 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: List unique top-level directories of changed files
         id: getdirs2scan
         run: |
+          echo Debug Info
+          python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github' --debug
+
+          echo "Retrieve list of paths"
           # Run your Python script to get changed directories
           unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
 
@@ -55,6 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Check matrix path
@@ -66,4 +71,5 @@ jobs:
         uses: ./.github/workflows/quayio-image-template.yml
         with:
           working_path: ${{ matrix.path }}
+          commit: ${{ github.ref }}
 
