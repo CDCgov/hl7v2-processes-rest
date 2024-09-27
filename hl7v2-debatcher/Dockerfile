@@ -11,7 +11,8 @@ COPY src ./src
 # Build the project
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-slim
+# Use a lightweight JDK runtime image
+FROM amazoncorretto:17-alpine
 
 #RUN apt-get update && apt-get install -y
 # Set the working directory
