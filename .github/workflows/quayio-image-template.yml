@@ -5,9 +5,16 @@ on:
     inputs:
       working_path:
         type: string
+        required: true
         description: Service/Image To Build
       github_sha: 
         type: string
+        required: true
+        description: GitHub SHA for checking out the specific commit
+      github_ref:
+        required: true
+        type: string
+        description: Github Reference        
       # version_tag:
       #   description: "Docker Image Version"
       #   required: true
@@ -29,7 +36,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.github_sha }}        
+          ref: ${{ inputs.github_ref }}        
 
       - name: Runner @${{ github.actor }}
         run: |

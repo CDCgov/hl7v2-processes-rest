@@ -70,8 +70,17 @@ jobs:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
 
-    uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ needs.sanitize-ref.outputs.sanitized_ref }}
-    with:
-      working_path: ${{ matrix.path }}
-      github_sha: ${{ github.sha }}
+    steps:
+      # Checkout the reusable workflow repository at the current branch (github.ref)
+      - name: Checkout reusable workflow repository
+        uses: actions/checkout@v4
+        with:
+          repository: myrepo/hl7v2-processes-rest
+          ref: ${{ github.ref }}
+          path: .github/workflows/  # Check out the reusable workflow into this path
+
+      - uses: quayio-image-template.yml
+        with:
+          working_path: ${{ matrix.path }}
+          github_sha: ${{ github.sha }}
 
