@@ -23,10 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch main branch
-        run: |
-          git fetch origin main:main  # Ensure the main branch is available
-
       - name: List unique top-level directories of changed files
         id: getdirs2scan
         run: |
@@ -57,13 +53,17 @@ jobs:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Check matrix path
         run: |
           echo "Matrix path: ${{ matrix.path }}"
       
 
       - name: Call reusable workflow with matrix value
-        uses: ./.github/workflows/quayio-image-template.yml@quayioimage
+        uses: ./.github/workflows/quayio-image-template.yml
         with:
           working_path: ${{ matrix.path }}
 
