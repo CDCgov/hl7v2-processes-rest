@@ -58,3 +58,5 @@ docker run -p 8080:8080 quay.io/us-cdcgov/cdc-dex/hl7-validator
 Messages can be submitted to the Validator API using any HTTP communication tool, e.g., Postman, Fiddler, etc. Callers must supply batch or single HL7 message in message body as raw plain text.
 
 eg url:  http://localhost:8080/validate
+
+P.S.: a Postman collection is available under src/test/postman for you to import locally and try the service.

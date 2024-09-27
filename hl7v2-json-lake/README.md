@@ -29,3 +29,5 @@ docker run -p 8080:8080 quay.io/us-cdcgov/cdc-dex/hl7-transformer
 Messages can be submitted to the transformer API using any HTTP communication tool, e.g., Postman, Fiddler, etc. Callers must supply HL7 message in message body as raw plain text.
 
 eg url:  http://localhost:8080/jsonTransformer
+
+P.S.: a Postman collection is available under src/test/postman for you to import locally and try the service.
