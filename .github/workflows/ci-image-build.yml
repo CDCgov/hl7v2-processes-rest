@@ -70,7 +70,6 @@ jobs:
         with:
             workflow: ${{ matrix.workflow_id }}
             repo: cdcent/data-exchange-hl7-devops
-            token: ${{ env.access_token }}
             inputs: '{ "working_path": "${{ matrix.path }}", "github_sha": "${{ github.sha }}", "github_ref": "${{ github.ref }}" }'
             ref: 'main'
             wait-for-completion: true
