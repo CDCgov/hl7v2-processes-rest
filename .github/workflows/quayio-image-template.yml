@@ -1,4 +1,4 @@
-name: QuayIO-Image-Build-n-Publish
+name: Quay Image Build & Publish
 
 on:
   workflow_dispatch:
