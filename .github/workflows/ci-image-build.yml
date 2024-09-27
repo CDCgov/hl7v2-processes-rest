@@ -56,7 +56,7 @@ jobs:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
 
-    uses: ./.github/workflows/reusable-workflow.yml 
+    uses: ./quayio-image-template.yml@${{ github.ref }}
     with:
       working_path: ${{ matrix.path }}
       github_sha: ${{ github.sha }}
