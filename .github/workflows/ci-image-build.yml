@@ -1,0 +1,67 @@
+name: CI - Image Build
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches:
+      - quayioimage-sr
+  pull_request: 
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+jobs:
+  parse-list:
+    runs-on: ubuntu-latest
+    outputs:
+      paths: ${{ steps.getdirs2scan.outputs.paths }}  # Output paths for use in the next job
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch main branch
+        run: |
+          git fetch origin main:main  # Ensure the main branch is available
+
+      - name: List unique top-level directories of changed files
+        id: getdirs2scan
+        run: |
+          # Run your Python script to get changed directories
+          unique_paths=$(python3 tools/gitDiffAnalysis.py --exclusions 'tools' '*.md' '.github')
+
+          # Ensure the output is formatted correctly
+          echo "Unique paths: $unique_paths"
+
+          # Convert the paths to a valid JSON array
+          unique_paths_json=$(echo "$unique_paths" | jq -R -s 'split("\n") | map(select(length > 0))')
+
+          # Check if the paths are empty and handle gracefully
+          if [ "$unique_paths_json" == "[]" ]; then
+            echo "No paths found after exclusions."
+          fi
+
+          # Write the paths to the environment file for the next job and set the output
+          echo paths=$unique_paths_json >> $GITHUB_ENV
+          echo paths=$unique_paths_json >> $GITHUB_OUTPUT  # For setting outputs
+  
+
+  run-template:
+    needs: parse-list
+    runs-on: ubuntu-latest
+    if: ${{ needs.parse-list.outputs.paths != '[]' }}  # Only run if paths are not empty
+    strategy:
+      matrix:
+        path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
+    steps:
+      - name: Check matrix path
+        run: |
+          echo "Matrix path: ${{ matrix.path }}"
+      
+
+      - name: Call reusable workflow with matrix value
+        uses: ./.github/workflows/quayio-image-template.yml
+        with:
+          value: ${{ matrix.path }}
