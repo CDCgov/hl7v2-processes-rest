@@ -48,20 +48,6 @@ jobs:
           echo paths=$unique_paths_json >> $GITHUB_ENV
           echo paths=$unique_paths_json >> $GITHUB_OUTPUT  # For setting outputs
 
-  # Sanitize github.ref to remove 'refs/heads/' or 'refs/tags/' prefix          
-  sanitize-ref:
-    runs-on: ubuntu-latest
-    outputs:
-      sanitized_ref: ${{ steps.sanitize.outputs.cleaned_ref }}
-    steps:
-      - name: Sanitize GitHub Ref
-        id: sanitize
-        run: |
-          # Strip refs/heads/ or refs/tags/ prefix
-          sanitized_ref=${GITHUB_REF#refs/heads/}
-          sanitized_ref=${sanitized_ref#refs/tags/}
-          echo "cleaned_ref=$sanitized_ref" >> $GITHUB_OUTPUT  
-
   run-template:
     needs: parse-list
     runs-on: ubuntu-latest
@@ -75,7 +61,7 @@ jobs:
       - name: Checkout reusable workflow repository
         uses: actions/checkout@v4
         with:
-          repository: myrepo/hl7v2-processes-rest
+          repository: cdcgov/hl7v2-processes-rest
           ref: ${{ github.ref }}
           path: .github/workflows/  # Check out the reusable workflow into this path
 
