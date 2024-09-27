@@ -65,4 +65,4 @@ jobs:
       - name: Call reusable workflow with matrix value
         uses: ./.github/workflows/quayio-image-template.yml
         with:
-          value: ${{ matrix.path }}
+          working_path: ${{ matrix.path }}
