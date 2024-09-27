@@ -56,19 +56,9 @@ jobs:
     strategy:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
 
-      - name: Check matrix path
-        run: |
-          echo "Matrix path: ${{ matrix.path }}"
-      
+    uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }}
+    with:
+      working_path: ${{ matrix.path }}
+      github_sha: ${{ github.sha }}
 
-      - name: Call reusable workflow with matrix value
-        uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }}
-        with:
-          working_path: ${{ matrix.path }}
-          github_sha: ${{ github.sha }}
