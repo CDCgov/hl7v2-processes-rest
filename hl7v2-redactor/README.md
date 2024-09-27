@@ -7,17 +7,34 @@ The Redactor API uses the HL7-PET library to perform redaction on specific field
 ## Sample Report
 ``` json
 {
-"report": "(redacted HL7 message.............
-,
-[RedactInfo(PID-5[
-1
-].1,Redacted PID-5[
-1
-].1 with empty value,
-null,
-3)
-])" }
+ "redacted_message=": "(redacted HL7 message............."
+,"redaction_report": {
+    [
+        {
+            "path": "PID-5[1].1",
+            "field_index": 1,
+            "message": "Redacted PID-5[1].1 with empty value",
+            "line_number":  3
+        }
+    ] 
+    }
+}
+```
 
+## Running the Docker images
+
+This project is built as a docker image and deployed on Quay.io.
+You can find the image here: https://quay.io/repository/us-cdcgov/cdc-dex/hl7-redactor
+
+To run the image locally, simply pull the image
+
+```
+   docker pull quay.io/us-cdcgov/cdc-dex/hl7-redactor
+```
+
+and run it with a similar command below:
+```
+docker run -p 8080:8080 quay.io/us-cdcgov/cdc-dex/hl7-redactor
 ```
 
 ## How to Submit A Message for Redactor

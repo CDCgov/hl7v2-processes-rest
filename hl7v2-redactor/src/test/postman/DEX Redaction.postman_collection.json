@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "8cda26db-0353-4996-8abb-7b8e8d922d7c",
+		"name": "DEX Redaction",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1848148",
+		"_collection_link": "https://gold-sunset-3610.postman.co/workspace/DEX~feb55f1d-34c3-4efc-bf1d-9bb9575c04ee/collection/1848148-8cda26db-0353-4996-8abb-7b8e8d922d7c?action=share&source=collection_link&creator=1848148"
+	},
+	"item": [
+		{
+			"name": "redact message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "<Place your HL7 message here>",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/redactor",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"redactor"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

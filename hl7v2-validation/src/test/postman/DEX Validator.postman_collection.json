@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "a2c434ad-7c17-4bb8-8929-af3bb182b724",
+		"name": "DEX Validator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1848148",
+		"_collection_link": "https://gold-sunset-3610.postman.co/workspace/DEX~feb55f1d-34c3-4efc-bf1d-9bb9575c04ee/collection/1848148-a2c434ad-7c17-4bb8-8929-af3bb182b724?action=share&source=collection_link&creator=1848148"
+	},
+	"item": [
+		{
+			"name": "validate message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "<Place your HL7 message here>",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/validate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"validate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

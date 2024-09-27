@@ -8,34 +8,50 @@ If a message is submitted to validate, the full report of structural errors and 
 ``` json
 {
 "entries": {
-"structure": [
-{
-"line": 8,
-"column": 1,
-"path": "OBX[1]-25[1]",
-"description": "Field OBX-25 (Performing Organization Medical Director) is missing. Depending on the use case and data availability it may be appropriate to value this element (Usage is RE, Required, but may be Empty).",
-"category": "Usage",
-"classification": "Warning",
-"stackTrace": null,
-"metaData": null
+  "structure": [
+    {
+        "line": 8,
+        "column": 1,
+        "path": "OBX[1]-25[1]",
+        "description": "Field OBX-25 (Performing Organization Medical Director) is missing. Depending on the use case and data availability it may be appropriate to value this element (Usage is RE, Required, but may be Empty).",
+        "category": "Usage",
+        "classification": "Warning",
+    }
+    .....
+    ],
+        "content": [],
+        "value-set": []
+    },
+    "error-count": {
+        "structure": 0,
+        "value-set": 0,
+        "content": 0
+    },
+    "warning-count": {
+        "structure": 416,
+        "value-set": 0,
+        "content": 0
+    },
+    "status": "VALID_MESSAGE"
 }
-.....
-],
-"content": [],
-"value-set": []
-},
-"error-count": {
-"structure": 0,
-"value-set": 0,
-"content": 0
-},
-"warning-count": {
-"structure": 416,
-"value-set": 0,
-"content": 0
-},
-"status": "VALID_MESSAGE"
-}
+```
+
+
+
+## Running the Docker images
+
+This project is built as a docker image and deployed on Quay.io.
+You can find the image here: https://quay.io/repository/us-cdcgov/cdc-dex/hl7-validator
+
+To run the image locally, simply pull the image
+
+```
+   docker pull quay.io/us-cdcgov/cdc-dex/hl7-validator
+```
+
+and run it with a similar command below:
+```
+docker run -p 8080:8080 quay.io/us-cdcgov/cdc-dex/hl7-validator
 ```
 ## How to Submit A Message to Validate
 
