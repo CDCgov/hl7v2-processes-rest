@@ -5,6 +5,7 @@ on:
     branches:
       - ci/quay
       - main
+      - testingmouni
 
 # Service Name can take any of the following values:
 #   all - to build all services and push to quay
