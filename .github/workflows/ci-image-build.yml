@@ -79,7 +79,7 @@ jobs:
           ref: ${{ github.ref }}
           path: .github/workflows/  # Check out the reusable workflow into this path
 
-      - uses: quayio-image-template.yml
+      - uses: ./quayio-image-template.yml
         with:
           working_path: ${{ matrix.path }}
           github_sha: ${{ github.sha }}
