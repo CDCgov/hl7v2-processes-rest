@@ -20,6 +20,10 @@ jobs:
   quay_build:
     runs-on: ubuntu-latest
     steps:
+      - name: Echo the working path
+        run: |
+          echo "Building service/image at path: ${{ inputs.working_path }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
