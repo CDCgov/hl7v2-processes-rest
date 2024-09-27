@@ -47,7 +47,20 @@ jobs:
           # Write the paths to the environment file for the next job and set the output
           echo paths=$unique_paths_json >> $GITHUB_ENV
           echo paths=$unique_paths_json >> $GITHUB_OUTPUT  # For setting outputs
-  
+
+  # Sanitize github.ref to remove 'refs/heads/' or 'refs/tags/' prefix          
+  sanitize-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      sanitized_ref: ${{ steps.sanitize.outputs.cleaned_ref }}
+    steps:
+      - name: Sanitize GitHub Ref
+        id: sanitize
+        run: |
+          # Strip refs/heads/ or refs/tags/ prefix
+          sanitized_ref=${GITHUB_REF#refs/heads/}
+          sanitized_ref=${sanitized_ref#refs/tags/}
+          echo "cleaned_ref=$sanitized_ref" >> $GITHUB_OUTPUT  
 
   run-template:
     needs: parse-list
@@ -57,7 +70,7 @@ jobs:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
 
-    uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }}
+    uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ needs.sanitize-ref.outputs.sanitized_ref }}
     with:
       working_path: ${{ matrix.path }}
       github_sha: ${{ github.sha }}
