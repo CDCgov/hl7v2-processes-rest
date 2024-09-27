@@ -56,26 +56,32 @@ jobs:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
 
-    steps:
-      # Manually checkout the repository with the desired ref
-      - name: Checkout reusable workflow repository
-        uses: actions/checkout@v4
-        with:
-          repository: cdcgov/hl7v2-processes-rest
-          ref: ${{ github.ref }}  # Dynamically checking out the current branch
-          path: .github/workflows/
+    uses: ./.github/workflows/reusable-workflow.yml 
+    with:
+      working_path: ${{ matrix.path }}
+      github_sha: ${{ github.sha }}
+      github_ref: ${{ github.ref }}
+
+    # steps:
+    #   # Manually checkout the repository with the desired ref
+    #   - name: Checkout reusable workflow repository
+    #     uses: actions/checkout@v4
+    #     with:
+    #       repository: cdcgov/hl7v2-processes-rest
+    #       ref: ${{ github.ref }}  # Dynamically checking out the current branch
+    #       path: .github/workflows/
   
-      - name: Automatically Dispatch Remote CICD Trigger Event 
-        uses: aurelien-baudet/workflow-dispatch@v2.1.1
-        with:
-            workflow: ${{ matrix.workflow_id }}
-            repo: cdcent/data-exchange-hl7-devops
-            inputs: '{ "working_path": "${{ matrix.path }}", "github_sha": "${{ github.sha }}", "github_ref": "${{ github.ref }}" }'
-            ref: 'main'
-            wait-for-completion: true
-            wait-for-completion-timeout: 120m
-            wait-for-completion-interval: 300s
-            display-workflow-run-url: true
+    #   - name: Automatically Dispatch Remote CICD Trigger Event 
+    #     uses: aurelien-baudet/workflow-dispatch@v2.1.1
+    #     with:
+    #         workflow: ${{ matrix.workflow_id }}
+    #         repo: cdcent/data-exchange-hl7-devops
+    #         inputs: '{ "working_path": "${{ matrix.path }}", "github_sha": "${{ github.sha }}", "github_ref": "${{ github.ref }}" }'
+    #         ref: 'main'
+    #         wait-for-completion: true
+    #         wait-for-completion-timeout: 120m
+    #         wait-for-completion-interval: 300s
+    #         display-workflow-run-url: true
             
     # steps:
     #   # Checkout the reusable workflow repository at the current branch (github.ref)
