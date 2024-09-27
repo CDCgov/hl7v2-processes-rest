@@ -68,8 +68,7 @@ jobs:
       
 
       - name: Call reusable workflow with matrix value
-        uses: ./.github/workflows/quayio-image-template.yml
+        uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }}
         with:
           working_path: ${{ matrix.path }}
-          commit: ${{ github.ref }}
-
+          github_sha: ${{ github.sha }}

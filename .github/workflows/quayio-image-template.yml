@@ -6,7 +6,7 @@ on:
       working_path:
         type: string
         description: Service/Image To Build
-      commit: 
+      github_sha: 
         type: string
       # version_tag:
       #   description: "Docker Image Version"
@@ -29,7 +29,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}        
+          ref: ${{ inputs.github_sha }}        
 
       - name: Runner @${{ github.actor }}
         run: |
