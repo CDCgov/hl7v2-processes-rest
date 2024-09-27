@@ -56,23 +56,27 @@ jobs:
       matrix:
         path: ${{ fromJson(needs.parse-list.outputs.paths) }}  # Use job output for matrix, no fallback required
 
-    steps:
-      # Checkout the reusable workflow repository at the current branch (github.ref)
-      - name: Checkout reusable workflow repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
+    # steps:
+    #   # Checkout the reusable workflow repository at the current branch (github.ref)
+    #   - name: Checkout reusable workflow repository
+    #     uses: actions/checkout@v4
+    #     with:
+    #       ref: ${{ github.ref }}
 
-      - run: |
-          pwd
-          ls -al
+    #   - run: |
+    #       pwd
+    #       ls -al
 
-      - name: Enable Debug Mode
-        run: |
-          echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
+    #   - name: Enable Debug Mode
+    #     run: |
+    #       echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
-      - uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }} 
-        with:
-          working_path: ${{ matrix.path }}
-          github_sha: ${{ github.sha }}
+    #   - uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }} 
+    #     with:
+    #       working_path: ${{ matrix.path }}
+    #       github_sha: ${{ github.sha }}
 
+    uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }}
+    with:
+      working_path: ${{ matrix.path }}
+      github_sha: ${{ github.sha }}
