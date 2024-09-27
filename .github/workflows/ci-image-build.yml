@@ -64,7 +64,7 @@ jobs:
           repository: cdcgov/hl7v2-processes-rest
           ref: ${{ github.ref }}
 
-      - uses: .github/workflows/quayio-image-template.yml
+      - uses: ./.github/workflows/quayio-image-template.yml
         with:
           working_path: ${{ matrix.path }}
           github_sha: ${{ github.sha }}
