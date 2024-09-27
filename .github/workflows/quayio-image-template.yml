@@ -29,6 +29,10 @@ jobs:
   quay_build:
     runs-on: ubuntu-latest
     steps:
+      - name: Enable Debug Mode
+        run: |
+          echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
+
       - name: Echo the working path
         run: |
           echo "Building service/image at path: ${{ inputs.working_path }}"
@@ -40,6 +44,8 @@ jobs:
  
       - name: Runner @${{ github.actor }}
         run: |
+          pwd
+          ls -al
           echo "--------------------------------------------------"
           echo "Workflow was run by: @${{ github.actor }}"
           echo "Service Name: ${{ inputs.working_path }}
