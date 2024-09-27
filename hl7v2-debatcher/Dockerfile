@@ -18,7 +18,7 @@ FROM amazoncorretto:17-alpine
 # Set the working directory
 WORKDIR /app
 
-COPY --from=builder /app/target/hl7v2-debatcher-0.1.jar application.jar
+COPY --from=builder /app/target/hl7v2-debatcher-0.2.jar application.jar
 
 # Expose the application port
 EXPOSE 8080
