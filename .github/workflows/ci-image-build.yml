@@ -61,7 +61,6 @@ jobs:
       - name: Checkout reusable workflow repository
         uses: actions/checkout@v4
         with:
-          repository: cdcgov/hl7v2-processes-rest
           ref: ${{ github.ref }}
 
       - run: |
@@ -72,7 +71,7 @@ jobs:
         run: |
           echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
-      - uses: ./.github/workflows/quayio-image-template.yml
+      - uses: cdcgov/hl7v2-processes-rest/.github/workflows/quayio-image-template.yml@${{ github.ref }} 
         with:
           working_path: ${{ matrix.path }}
           github_sha: ${{ github.sha }}
