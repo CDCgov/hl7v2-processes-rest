@@ -1,7 +1,7 @@
 name: Quay Image Build & Publish
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       working_path:
         type: string
