@@ -11,13 +11,14 @@ COPY src ./src
 # Build the project
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-slim
+# Use a lightweight JDK runtime image
+FROM amazoncorretto:17-alpine
 
 #RUN apt-get update && apt-get install -y
 # Set the working directory
 WORKDIR /app
 
-COPY --from=builder /app/target/hl7v2-debatcher-0.1.jar application.jar
+COPY --from=builder /app/target/hl7v2-debatcher-0.2.jar application.jar
 
 # Expose the application port
 EXPOSE 8080
