@@ -61,7 +61,7 @@ jobs:
       - name: Checkout reusable workflow repository
         uses: actions/checkout@v4
         with:
-          repository: myrepo/hl7v2-processes-rest
+          repository: cdcgov/hl7v2-processes-rest
           ref: ${{ github.ref }}  # Dynamically checking out the current branch
           path: .github/workflows/
   
