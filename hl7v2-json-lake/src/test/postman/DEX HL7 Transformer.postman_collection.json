@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "4908d04f-a436-45a6-9a15-9e4572e438cf",
+		"name": "DEX HL7 Transformer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1848148",
+		"_collection_link": "https://gold-sunset-3610.postman.co/workspace/DEX~feb55f1d-34c3-4efc-bf1d-9bb9575c04ee/collection/1848148-4908d04f-a436-45a6-9a15-9e4572e438cf?action=share&source=collection_link&creator=1848148"
+	},
+	"item": [
+		{
+			"name": "transform message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "<Place HL7 message here>",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/jsonTransformer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"jsonTransformer"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

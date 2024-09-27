@@ -1,7 +1,5 @@
 package gov.cdc.dex.validation.service
 
-
-
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import gov.cdc.ProfileManager
@@ -14,9 +12,6 @@ import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import org.slf4j.LoggerFactory
 import java.util.*
-
-
-
 
 data class ProfileIdentifier(
     @SerializedName("data_stream_id") val dataStreamId : String,
@@ -40,10 +35,8 @@ class ValidationController() {
     }
 
 
-    @Post("/validator", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])
-    fun structureValidate(
-        @Body content: String
-    ): HttpResponse<String> {
+    @Post("/validate", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])
+    fun structureValidate(@Body content: String): HttpResponse<String> {
         log.info("AUDIT::Executing Validation of message...")
 
         // Assuming 'content' is never null and is required
