@@ -62,5 +62,6 @@ jobs:
       - name: Build & Push ${{ inputs.working_path }}
         run: |
           VERSION=$(grep -m1 '<version>' ./${{ inputs.working_path }}/pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          cd ${{ inputs.working_path }}
           docker build -t quay.io/${{ env.QUAY_REPOSITORY }}/${{ inputs.working_path }}:$VERSION ./${{ inputs.working_path }}
           docker push quay.io/${{ env.QUAY_REPOSITORY }}/${{ inputs.working_path }}:$VERSION
