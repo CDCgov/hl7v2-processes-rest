@@ -3,7 +3,6 @@ name: Quay Build & Publish
 on:
   push:
     branches:
-      - ci/quay
       - main
       - testingmouni
 
