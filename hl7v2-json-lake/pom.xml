@@ -6,7 +6,7 @@
 
     <artifactId>hl7v2-json-lake</artifactId>
     <groupId>cdc.gov</groupId>
-    <version>0.2</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <parent>

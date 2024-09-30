@@ -6,7 +6,7 @@
 
     <artifactId>hl7v2-validation</artifactId>
     <groupId>cdc.gov</groupId>
-    <version>0.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <parent>
