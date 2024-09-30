@@ -23,7 +23,7 @@ FROM amazoncorretto:17-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous stage
-  COPY --from=build /app/target/hl7v2-json-lake-0.1.jar application.jar
+  COPY --from=build /app/target/hl7v2-json-lake-0.2.jar application.jar
 
 # Expose the application port
 EXPOSE 8080
