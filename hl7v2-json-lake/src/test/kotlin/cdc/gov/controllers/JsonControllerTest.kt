@@ -1,9 +1,10 @@
 package cdc.gov.controllers
 
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import io.micronaut.http.HttpResponse
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
@@ -19,23 +20,25 @@ class JsonControllerTest {
 
     @Test
     fun `test transformMessage with valid HL7 message`(): Unit {
-        // Arrange
+        // arrange
         val inputMessage = loadTestResource("COVID19_ELR_01.hl7")
 
-        // Act
+        // act
         val response: HttpResponse<Any> = jsonController.transformMessage(inputMessage)
 
-        // Ensure response is successful
+        // ensure response is successful
         assertTrue(response.status.code in 200..299, "Expected successful response")
 
-        // Extract the response body
-        val responseHl7: String = response.body().toString()
+        val responseStr: String = response.body().toString()
+        val gson = GsonBuilder().create()
+        val responseJson: JsonObject = gson.fromJson(responseStr, JsonObject::class.java)
 
-        // Assert
-        assertTrue(responseHl7.contains("PID"), "Response should contain PID segment")
-        assertTrue(responseHl7.contains("OBR"), "Response should contain OBR segment")
-        assertTrue(responseHl7.startsWith("MSH"), "Response should start with MSH segment")
+        // assert that the response contains the expected HL7 segments
+        assertTrue(responseJson.has("PID"), "Response should contain PID segment")
+        assertTrue(responseJson.has("OBR"), "Response should contain OBR segment")
+        assertTrue(responseJson.has("MSH"), "Response should contain MSH segment")
     }
+
 
     private fun loadTestResource(fileName: String): String {
         return try {
