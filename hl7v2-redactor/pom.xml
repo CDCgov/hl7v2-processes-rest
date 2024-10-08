@@ -94,12 +94,6 @@
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-inject-java</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.mockk</groupId>
-            <artifactId>mockk</artifactId>
-            <version>1.13.12</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 

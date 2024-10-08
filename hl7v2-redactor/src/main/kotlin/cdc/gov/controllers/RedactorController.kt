@@ -18,45 +18,43 @@ class RedactorController {
     @Post("/redactor", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])  // Endpoint URL
     fun redactMessage(@Body content: String): HttpResponse<Any> {
         return try {
-            // Call to the redaction logic
-            val report: String = getRedactedReport(content).toString()
+            // get redacted report
+            val report: Pair<String, List<RedactInfo>>? = getRedactedReport(content)
 
-            // Step 1: Remove surrounding parentheses
-            val trimmedResponse = report.removeSurrounding("(", ")")
-            val lastCommaIndex = trimmedResponse.lastIndexOf(",[")
-            var redactedMsg = ""
-            var cleanedRedactList: List<String> = emptyList()
-
-            if (lastCommaIndex != -1) {
-                // Extract the redacted message and the redaction report
-                redactedMsg = trimmedResponse.substring(0, lastCommaIndex).trim()
-                val redactInfoList = trimmedResponse.substring(lastCommaIndex + 1).trim()
-
-                // Step 2: Clean up the list by removing brackets and splitting it into individual entries
-                cleanedRedactList = redactInfoList
-                    .removePrefix("[")
-                    .removeSuffix("]")
-                    .split("),")
-                    .map { it.trim().plus(")") }  // Ensure each entry ends with ')'
+            // unpack report
+            var redactedMessage: String = ""
+            var redactionReport: List<RedactInfo> = emptyList()
+            if (report != null) {
+                redactedMessage = report.first
+                redactionReport = report.second
             }
 
-            // Step 3: Build the JSON response
-            val reportJson = JsonObject()
-            reportJson.addProperty("redacted_message", redactedMsg)
+            // build JSON array with RedactInfo list
+            val redactionReportJsonArray = JsonArray()
+            redactionReport.forEach { redactInfo ->
+                val redactInfoJson = JsonObject().apply {
+                    addProperty("path", redactInfo.path())
+                    addProperty("field_index", redactInfo.fieldIndex())
+                    addProperty("message", redactInfo.rulemsg())
+                    addProperty("rule", redactInfo.condition())
+                    addProperty("line_number", redactInfo.lineNumber())
+                }
+                redactionReportJsonArray.add(redactInfoJson)
+            }
 
-            // Adding the list of redactions as a JSON array
-            val redactionsArray = JsonArray()
-            cleanedRedactList.forEach { redactionsArray.add(it) }
-            reportJson.add("redaction_report", redactionsArray)
+            // build response JSON
+            val responseJson = JsonObject()
+            responseJson.addProperty("redacted_message", redactedMessage)
+            responseJson.add("redaction_report", redactionReportJsonArray)
 
-            // Return the JSON response
-            HttpResponse.ok(reportJson.toString())
+            // issue response
+            HttpResponse.ok(responseJson.toString())
         } catch (e: Exception) {
             HttpResponse.badRequest("Error: ${e.message}")
         }
     }
 
-    private fun getRedactedReport(msg: String): Tuple2<String, List<RedactInfo>>? {
+    private fun getRedactedReport(msg: String): Pair<String, List<RedactInfo>>? {
         val dIdentifier = DeIdentifier()
         val configFile = "/profiles/DEFAULT-config.txt"
         val rules = if (this::class.java.getResource(configFile) != null) {
@@ -64,6 +62,11 @@ class RedactorController {
         } else {
             throw FileNotFoundException("Unable to find redaction config file $configFile")
         }
-        return dIdentifier.deIdentifyMessage(msg, rules.toTypedArray())
+        val tupleResult: Tuple2<String, List<RedactInfo>>? = dIdentifier.deIdentifyMessage(msg, rules.toTypedArray())
+        return tupleResult?.toPair()
+    }
+
+    private fun <A, B> Tuple2<A, B>.toPair(): Pair<A, B> {
+        return Pair(this._1(), this._2())
     }
 }
