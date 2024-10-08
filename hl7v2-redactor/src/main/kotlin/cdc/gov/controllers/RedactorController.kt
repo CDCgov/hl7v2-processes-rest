@@ -1,8 +1,9 @@
 package cdc.gov.controllers
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import gov.cdc.hl7.DeIdentifier
 import gov.cdc.hl7.RedactInfo
-import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
@@ -15,28 +16,45 @@ import java.io.FileNotFoundException
 class RedactorController {
 
     @Post("/redactor", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])  // Endpoint URL
-    fun redactMessage( @Body content: String,
-                      request: HttpRequest<Any>): HttpResponse<Any> {
+    fun redactMessage(@Body content: String): HttpResponse<Any> {
+        return try {
+            // get redacted report
+            val report: Pair<String, List<RedactInfo>>? = getRedactedReport(content)
 
-        var responseContent =""
+            // unpack report
+            var redactedMessage: String = ""
+            var redactionReport: List<RedactInfo> = emptyList()
+            if (report != null) {
+                redactedMessage = report.first
+                redactionReport = report.second
+            }
 
-         try {
-             val report = getRedactedReport(content ?: "")
-             if (report != null) {
-                 responseContent = "{ \"report\": \"${report}\" }"
-             }
+            // build JSON array with RedactInfo list
+            val redactionReportJsonArray = JsonArray()
+            redactionReport.forEach { redactInfo ->
+                val redactInfoJson = JsonObject().apply {
+                    addProperty("path", redactInfo.path())
+                    addProperty("field_index", redactInfo.fieldIndex())
+                    addProperty("message", redactInfo.rulemsg())
+                    addProperty("rule", redactInfo.condition())
+                    addProperty("line_number", redactInfo.lineNumber())
+                }
+                redactionReportJsonArray.add(redactInfoJson)
+            }
 
-        }catch (e: Exception) {
-             HttpResponse
-                 .badRequest("Error: ${e.message}")
-         }
+            // build response JSON
+            val responseJson = JsonObject()
+            responseJson.addProperty("redacted_message", redactedMessage)
+            responseJson.add("redaction_report", redactionReportJsonArray)
 
-         return HttpResponse.ok(responseContent)
-
+            // issue response
+            HttpResponse.ok(responseJson.toString())
+        } catch (e: Exception) {
+            HttpResponse.badRequest("Error: ${e.message}")
+        }
     }
 
-    
-    fun getRedactedReport(msg: String): Tuple2<String, List<RedactInfo>>? {
+    private fun getRedactedReport(msg: String): Pair<String, List<RedactInfo>>? {
         val dIdentifier = DeIdentifier()
         val configFile = "/profiles/DEFAULT-config.txt"
         val rules = if (this::class.java.getResource(configFile) != null) {
@@ -44,7 +62,11 @@ class RedactorController {
         } else {
             throw FileNotFoundException("Unable to find redaction config file $configFile")
         }
-        return dIdentifier.deIdentifyMessage(msg, rules.toTypedArray())
+        val tupleResult: Tuple2<String, List<RedactInfo>>? = dIdentifier.deIdentifyMessage(msg, rules.toTypedArray())
+        return tupleResult?.toPair()
     }
 
+    private fun <A, B> Tuple2<A, B>.toPair(): Pair<A, B> {
+        return Pair(this._1(), this._2())
+    }
 }

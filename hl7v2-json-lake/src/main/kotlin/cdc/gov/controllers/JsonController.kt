@@ -21,7 +21,7 @@ class JsonController {
     }
 
     @Post("/jsonTransformer", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])  // Endpoint URL
-    fun redactMessage(@Body content: String): HttpResponse<Any> {
+    fun transformMessage(@Body content: String): HttpResponse<Any> {
 
         var responseContent =""
 
