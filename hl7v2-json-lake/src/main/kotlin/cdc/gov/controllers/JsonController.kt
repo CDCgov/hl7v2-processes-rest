@@ -28,7 +28,7 @@ class JsonController {
          try {
              val fullHL7WithNulls = buildJson(content)
              val fullHL7 = gsonNoNulls.toJsonTree(fullHL7WithNulls).asJsonObject
-             responseContent = "{${fullHL7}}"
+             responseContent = fullHL7.toString()
 
         }catch (e: Exception) {
              HttpResponse
