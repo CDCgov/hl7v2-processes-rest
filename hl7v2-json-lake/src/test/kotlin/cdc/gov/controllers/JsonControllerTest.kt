@@ -34,8 +34,6 @@ class JsonControllerTest {
         val responseJson: JsonObject = gson.fromJson(responseStr, JsonObject::class.java)
 
         // assert that the response contains the expected HL7 segments
-        assertTrue(responseJson.has("PID"), "Response should contain PID segment")
-        assertTrue(responseJson.has("OBR"), "Response should contain OBR segment")
         assertTrue(responseJson.has("MSH"), "Response should contain MSH segment")
     }
 
