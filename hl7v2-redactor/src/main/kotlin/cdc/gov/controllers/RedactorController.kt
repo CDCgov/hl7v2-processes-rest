@@ -11,12 +11,19 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
 import scala.Tuple2
 import java.io.FileNotFoundException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @Controller("/")  // Base URL for this controller
 class RedactorController {
 
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(RedactorController::class.java)
+    }
+
     @Post("/redactor", consumes = [MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON])  // Endpoint URL
     fun redactMessage(@Body content: String): HttpResponse<Any> {
+        logger.info("redactMessage triggered.")
         return try {
             // get redacted report
             val report: Pair<String, List<RedactInfo>>? = getRedactedReport(content)

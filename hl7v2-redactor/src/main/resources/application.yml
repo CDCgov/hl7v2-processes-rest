@@ -1,0 +1,6 @@
+micronaut:
+  log-level: INFO
+
+logging:
+  level:
+    root: INFO
