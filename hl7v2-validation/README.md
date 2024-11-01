@@ -1,8 +1,15 @@
 # HL7 v2 Validation API
 
-The HL7v2 Validation API is designed to structure validate DAART messages against the applicable profiles and standards. 5 DAART profiles are loaded under resources.
+This project serves as an example of how to perform validation on HL7 messages based on IGAMT profiles.
+In this implementation, we loaded 5 DAART profiles that are used depending of the values on MSH-21.1 and MSH-6.
 
-If a message is submitted to validate, the full report of structural errors and warnings is returned back to the caller. This detailed report includes the location and description of each error and warning found within the message.
+This project is dependent of the [lib-hl7v2-nist-validator](https://github.com/cdcgov/lib-hl7v2-nist-validator)
+We are using the default profileFetcher to fetch profiles from the project's resource folders.
+Other Profile Fetchers can be implemented to retrieve profiles form cloud storage or databases.
+
+If a message is submitted to validate, the full report of structure errors and warnings is returned back 
+to the caller. This detailed report includes the location and description of each error and warning found 
+within the message.
 
 ## Sample Report
 ``` json

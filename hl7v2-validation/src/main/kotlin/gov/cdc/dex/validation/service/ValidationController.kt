@@ -29,8 +29,8 @@ class ValidationController() {
         private const val HL7_SUBDELIMITERS = "^~\\&"
         const val PROFILE_CONFIG_FILE_PATH = "profiles/profile_config.json"
         val profileConfigJson = this::class.java.getResource("/$PROFILE_CONFIG_FILE_PATH")?.readText()
-        val gson = GsonBuilder().disableHtmlEscaping().serializeNulls().create()
-        val profileConfig = gson.fromJson(profileConfigJson, ProfileIdentifier::class.java)
+
+        val profileConfig = NistReport.nistGson.fromJson(profileConfigJson, ProfileIdentifier::class.java)
 
     }
 
@@ -42,13 +42,13 @@ class ValidationController() {
         // Assuming 'content' is never null and is required
         val resultData = validateMessage(content)
 
-        log.info("Message successfully redacted and validated")
-        return HttpResponse.ok(gson.toJson(resultData))
+        log.info("Message successfully validated")
+        return HttpResponse.ok(NistReport.nistGson.toJson(resultData))
 
     }
 
 
-    private fun validateMessage(hl7Message: String): NistReport {
+    fun validateMessage(hl7Message: String): NistReport {
         val profileNameAndPaths = getProfileNameAndPaths(hl7Message)
         return getStructureReport(hl7Message, profileNameAndPaths)
     }
@@ -74,7 +74,6 @@ class ValidationController() {
             )
         }
         return Pair(profileName, profileIdPaths)
-
     }
 
     private fun validateHL7Delimiters(hl7Message: String) {
@@ -112,8 +111,8 @@ class ValidationController() {
         } else {
             throw Exception(
                 "Unable to find validation profile named $profileName."
-                        + " Either the data stream ID DAART or the data in HL7 path(s) " +
-                        "'${profilePaths.joinToString()}' is invalid."
+                        + " The data in HL7 path(s) " +
+                        "'${profilePaths.joinToString()}' seems to be invalid."
             )
         }
     }
@@ -136,3 +135,4 @@ class ValidationController() {
     }
 
 }
+
