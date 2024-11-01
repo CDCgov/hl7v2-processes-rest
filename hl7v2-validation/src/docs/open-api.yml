@@ -1,0 +1,81 @@
+openapi: 3.0.1
+info:
+  title: HL7 Message Validation API
+  description: | 
+      API for validating HL7 message structure against configured profiles.
+      Note: This file was generated with Chat GPT
+  version: 1.0.0
+
+paths:
+  /validate:
+    post:
+      summary: Validate the structure of an HL7 message.
+      description: |
+        Validates the given HL7 message against predefined profile configurations. 
+        The message structure is verified based on data stream identifiers and paths specified in a configuration file.
+      operationId: structureValidate
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+            description: The HL7 message content to validate.
+      responses:
+        '200':
+          description: Validation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The status of the validation, e.g., "SUCCESS" or "STRUCTURE_ERRORS".
+                  report:
+                    type: object
+                    description: Detailed report of the validation.
+                    properties:
+                      errors:
+                        type: array
+                        items:
+                          type: string
+                          description: Error messages describing validation issues.
+        '400':
+          description: Invalid HL7 message format or missing delimiters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating a server-side issue.
+
+components:
+  schemas:
+    ValidationReport:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the validation process, such as "SUCCESS" or "STRUCTURE_ERRORS".
+        errors:
+          type: array
+          items:
+            type: string
+          description: List of validation errors.
+
+tags:
+  - name: Validation
+    description: Endpoints related to validating HL7 messages.

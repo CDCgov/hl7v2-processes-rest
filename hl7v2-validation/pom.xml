@@ -6,7 +6,7 @@
 
     <artifactId>hl7v2-validation</artifactId>
     <groupId>cdc.gov</groupId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -23,10 +23,9 @@
         <micronaut.aot.packageName>cdc.gov.aot.generated</micronaut.aot.packageName>
         <micronaut.runtime>netty</micronaut.runtime>
         <exec.mainClass>gov.cdc.dex.validation.service.ApplicationKt</exec.mainClass>
-        <kotlinVersion>1.9.23</kotlinVersion>
+        <kotlin.version>1.9.24</kotlin.version>
         <hl7-pet-version>1.2.10</hl7-pet-version>
-        <lib-nist-validator.version>1.3.7</lib-nist-validator.version>
-        <kotlin.version>1.9.22</kotlin.version>
+        <lib-nist-validator.version>1.3.10</lib-nist-validator.version>
     </properties>
 
     <dependencies>
@@ -48,13 +47,13 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
-            <version>${kotlinVersion}</version>
+            <version>${kotlin.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <version>${kotlinVersion}</version>
+            <version>${kotlin.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -226,7 +225,7 @@
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
                         <artifactId>kotlin-maven-allopen</artifactId>
-                        <version>${kotlinVersion}</version>
+                        <version>${kotlin.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
